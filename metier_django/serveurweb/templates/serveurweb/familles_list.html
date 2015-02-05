@@ -1,0 +1,18 @@
+
+{% if familles_list %}
+<table border="1" cellpadding="3">
+	<tr>
+		<td>Id</td><td>Libellé</td>
+	</tr>
+
+	{% for famille in familles_list %}
+		<tr>
+			<td>{{famille.id}}</td>
+			<td><a href="{% url 'familles_detail' famille.id %}">{{famille.libelle}}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+{% else %}
+	<p>aucune famille</p>
+{% endif %}
