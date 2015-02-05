@@ -7,10 +7,12 @@ class ArticlesAdmin(admin.ModelAdmin):
         ('Famille', {'fields': ['famille']}),
         (None,      {'fields': ['libelle']}),
         (None,      {'fields': ['prix']}),
+        (None,      {'fields': ['date']}),
     ]
 
-    list_display = ('famille', 'libelle', 'prix')
+    list_display = ('famille', 'libelle', 'prix', 'date')
     
+    list_filter = ['libelle']
     
 # Register your models here.
 

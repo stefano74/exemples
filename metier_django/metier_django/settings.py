@@ -101,8 +101,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
 STATIC_URL = '/static/'
+
+# Templates location
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 # register methods XML-RPC server
 XMLRPC_METHODS = (('serveurXMLRPC.views.afficherMainWindow',    'afficherMainWindow'),

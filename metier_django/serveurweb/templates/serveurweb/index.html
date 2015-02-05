@@ -1,20 +1,5 @@
 <title>{{page_titre}}</title>
 
-{% if list_articles %}
-<table border="1" cellpadding="3">
-	<tr>
-		<td>Id</td><td>Libellé</td><td>Prix</td>
-	</tr>
-
-	{% for article in list_articles %}
-		<tr>
-			<td>{{article.id}}</td>
-			<td>{{article.libelle}}</td>
-			<td>{{article.prix}}</td>
-		</tr>
-	{% endfor %}
-</table>
-
-{% else %}
-	<p>aucun article</p>
-{% endif %}
+<h1>serveurweb</h1>
+	<li><a href="{% url 'articles_list' %}">articles</a></li>
+	<li><a href="{% url 'familles_list' %}">familles</a></li>

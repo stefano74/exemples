@@ -2,11 +2,46 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from serveurweb.models import Articles
-
+from serveurweb.models import Familles
+from django.http.response import Http404, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.views import generic
+from django.forms.models import ModelForm
 # Create your views here.
 
 def index(request):
-    list_articles = Articles.objects.all()
-    context = {'list_articles' : list_articles, 'page_titre' : 'Liste des articles'}
+    context = {'page_titre' : 'serveurweb'}
     
     return render(request, 'serveurweb/index.html', context)
+
+class articles(generic.ListView):
+    def get_queryset(self):
+        return Articles.objects.all()
+
+class form_article(ModelForm):
+    class Meta:
+        model = Articles
+        
+def detail_article(request, article_id):
+    try:
+        article = Articles.objects.get(pk=article_id)
+    except article.DoesNotExist:
+        raise Http404("l'article n'existe pas")
+
+    if request.method == 'GET':
+        form = form_article(instance=article)
+        return render(request, 'serveurweb/article_detail.html', {'form': form, 'article_id': article.id})
+    
+    elif request.method == 'POST':
+        form = form_article(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse('articles_list'))
+        
+class familles(generic.ListView):
+    
+        def get_queryset(self):
+            return Familles.objects.order_by('id')
+
+class detail_familles(generic.DetailView):
+    model = Familles
