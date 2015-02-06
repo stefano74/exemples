@@ -3,7 +3,6 @@
 	<tr>
 		<td>Id</td><td>Famille</td><td>Libellé</td><td>Prix</td><td>Date</td>
 	</tr>
-
 	{% for article in articles_list %}
 		<tr>
 			<td>{{article.id}}</td>
@@ -14,7 +13,9 @@
 		</tr>
 	{% endfor %}
 </table>
-
 {% else %}
 	<p>aucun article</p>
 {% endif %}
+<br />
+<input type="button" value="Ajouter" onclick="window.location.href='{% url 'ajouter_article' %}'"></input>
+<input type="button" value="Retour" onclick="window.location.href='{% url 'index' %}'"></input>
