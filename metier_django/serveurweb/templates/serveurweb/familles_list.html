@@ -1,20 +1,22 @@
-
+<h1>Familles</h1>
 {% if familles_list %}
 <table border="1" cellpadding="3">
 	<tr>
-		<td>Id</td><td>Libellé</td>
+		<td>Id</td><td>Libellé</td><td>Modification</td><td>Suppression</td>
 	</tr>
-
-	{% for famille in familles_list %}
+    {% for famille in familles_list %}
+    	{{form}}
 		<tr>
 			<td>{{famille.id}}</td>
-			<td><a href="{% url 'familles_detail' famille.id %}">{{famille.libelle}}</td>
+			<td>{{famille.libelle}}</td>
+			<td><input type="button" value="Modifier" onclick="window.location.href='{% url 'modifier_famille' famille.id %}'"></input></td>
+			<td><input type="button" value="Supprimer" onclick="window.location.href='{% url 'supprimer_famille' famille.id %}'"></input></td>
 		</tr>
 	{% endfor %}
 </table>
-
 {% else %}
-	<p>aucune famille</p>
+	<p>aucune FAMILLE</p>
 {% endif %}
 <br />
+<input type="button" value="Ajouter" onclick="window.location.href='{% url 'ajouter_famille' %}'"></input>
 <input type="button" value="Retour" onclick="window.location.href='{% url 'index' %}'"></input>

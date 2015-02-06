@@ -4,7 +4,7 @@ from django.shortcuts import render
 from serveurweb.models import Articles
 from serveurweb.models import Familles
 from django.http.response import Http404, HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.forms.models import ModelForm
 from datetime import date
@@ -15,6 +15,10 @@ def index(request):
     context = {'page_titre' : 'serveurweb'}
     
     return render(request, 'serveurweb/index.html', context)
+
+#####################################################################################################################
+# Articles
+#####################################################################################################################
 
 class articles(generic.ListView):
     def get_queryset(self):
@@ -61,9 +65,30 @@ def ajouter_article(request):
             form.save()
         return HttpResponseRedirect(reverse('articles_list'))
 
+#####################################################################################################################
+# Familles
+#####################################################################################################################
+
+class form_famille(ModelForm):
+    class Meta:
+        model = Familles
+    
 class familles(generic.ListView):
         def get_queryset(self):
             return Familles.objects.order_by('id')
 
-class detail_familles(generic.DetailView):
+class detail_famille(generic.DetailView):
     model = Familles
+
+class ajouter_famille(generic.CreateView):
+    model = Familles
+    success_url = reverse_lazy('familles_list')
+
+class modifier_famille(generic.UpdateView):
+    model = Familles
+    success_url = reverse_lazy('familles_list')
+
+class supprimer_famille(generic.DeleteView):
+    model = Familles
+    success_url = reverse_lazy('familles_list')    
+

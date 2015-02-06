@@ -1,0 +1,5 @@
+<form method="post">{% csrf_token %}
+    Voulez-vous supprimer "{{ object }}" ?
+    <input type="submit" value="Ok" />
+	<input type="button" value="Annuler" onclick="window.location.href='{% url 'familles_list' %}'"></input>
+</form>
