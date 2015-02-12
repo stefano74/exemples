@@ -1,16 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
-from serveurweb.models import Articles
-from serveurweb.models import Familles
-from django.http.response import Http404, HttpResponseRedirect
+
+from django.shortcuts import render, get_object_or_404
+from django.http.response import HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.forms.models import ModelForm
-from datetime import date
 
-# Create your views here.
+from serveurweb.models import Articles
+from serveurweb.models import Familles
 
+#####################################################################################################################
+# Page racine
+#####################################################################################################################
 def index(request):
     context = {'page_titre' : 'serveurweb'}
     
@@ -29,42 +31,30 @@ class form_article(ModelForm):
         model = Articles
         
 def detail_article(request, article_id):
-    try:
-        article = Articles.objects.get(pk=article_id)
-    except article.DoesNotExist:
-        raise Http404("l'article n'existe pas")
-
-    if request.method == 'GET':
-        form = form_article(instance=article)
-        return render(request, 'serveurweb/article_detail.html', {'form': form, 'article_id': article.id})
     
-    elif request.method == 'POST':
-        form = form_article(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
+    article =get_object_or_404(Articles, pk=article_id)
+    form = form_article(request.POST or None, instance=article)
+    if form.is_valid():
+        form.save()
         return HttpResponseRedirect(reverse('articles_list'))
+    return render(request, 'serveurweb/article_detail.html', {'form':form})
 
 def supprimer_article(request, article_id): 
-    try:
-        article = Articles.objects.get(pk=article_id)
-    except article.DoesNotExist:
-        raise Http404("l'article n'existe pas")
-    article.delete()
-    return HttpResponseRedirect(reverse('articles_list'))
+    
+    article = get_object_or_404(Articles, pk=article_id)
+    if request.method == 'POST':
+        article.delete()
+        return HttpResponseRedirect(reverse('articles_list'))
+    return render(request, 'serveurweb/articles_confirm_delete.html', {'object': article})
+    
 
 def ajouter_article(request): 
-    article = Articles.objects.create(libelle='', prix=0, date=date.today(), famille=Familles.objects.get(pk=1))
-
-    if request.method == 'GET':
-        form = form_article(instance=article)
-        return render(request, 'serveurweb/article_detail.html', {'form': form, 'article_id': article.id})
-    
-    elif request.method == 'POST':
-        form = form_article(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
+    form = form_article(request.POST or None)
+    if form.is_valid():
+        form.save()
         return HttpResponseRedirect(reverse('articles_list'))
-
+    return render(request, 'serveurweb/article_detail.html', {'form': form})
+    
 #####################################################################################################################
 # Familles
 #####################################################################################################################

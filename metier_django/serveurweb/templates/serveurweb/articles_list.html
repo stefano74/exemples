@@ -11,6 +11,7 @@
 			<td><a href="{% url 'detail_article' article.id %}">{{article.libelle}}</a></td>
 			<td>{{article.prix}}</td>
 			<td>{{article.date}}</td>
+			<td><a href="{% url 'supprimer_article' article.id %}">supprimer</a></td>
 		</tr>
 	{% endfor %}
 </table>

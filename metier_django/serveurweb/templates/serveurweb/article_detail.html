@@ -1,7 +1,6 @@
-<form action={% url 'detail_article' article_id %} method="POST"> 
+<form method="POST">{% csrf_token %}
 	{%csrf_token%}
 	{{form.as_p}}
-	<input type="button" value="Supprimer" onclick="window.location.href='{% url 'supprimer_article' article_id %}'"></input>
 	<input type="submit" value="Enregistrer" />
 <!--	<a href="{% url 'articles_list' %}" ><input type="button" value="Annuler"></input></a> -->
 	<input type="button" value="Annuler" onclick="window.location.href='{% url 'articles_list' %}'"></input>
