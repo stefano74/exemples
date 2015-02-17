@@ -7,9 +7,10 @@ from datetime import date
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QTableView, \
     QHeaderView, QTableWidgetItem, QLabel, QLineEdit, QAbstractItemView, QDateEdit
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QTextDocument
 from PyQt5.Qt import QTableWidget
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 from _random import Random
 import string
 from random import sample
@@ -17,6 +18,7 @@ import random
 from xmlrpc.client import ProtocolError
 import http
 from _datetime import datetime
+import markupsafe
 
 
 #################################################################################
@@ -154,6 +156,7 @@ class MainWindow(QWidget):
                 btnCom = QPushButton('Commit')
                 btnRol = QPushButton('RollBack')
                 btnQui = QPushButton('Quitter')
+                btnImp = QPushButton('Imprimer')
                 
                 btnAdd.setMaximumSize(100, 30)
                 btnMod.setMaximumSize(100, 30)
@@ -163,6 +166,7 @@ class MainWindow(QWidget):
                 btnCom.setMaximumSize(100, 30)
                 btnRol.setMaximumSize(100, 30)
                 btnQui.setMaximumSize(100, 30)
+                btnImp.setMaximumSize(100, 30)
 
                 mainLayout = QGridLayout()
                 mainLayout.addWidget(self._tableWidget, 0, 0, 1, 4)
@@ -173,6 +177,7 @@ class MainWindow(QWidget):
                 mainLayout.addWidget(btnGen, 2, 2)
                 mainLayout.addWidget(btnRef, 2, 3)
                 mainLayout.addWidget(btnRol, 3, 1)
+                mainLayout.addWidget(btnImp, 3, 2)
                 mainLayout.addWidget(btnQui, 3, 3)
                     
                 self.setLayout(mainLayout)
@@ -186,6 +191,7 @@ class MainWindow(QWidget):
                 btnCom.clicked.connect(self.CommitSession)
                 btnRol.clicked.connect(self.RollbackSession)
                 btnQui.clicked.connect(self.fermerAppli)
+                btnImp.clicked.connect(self.imprimer)
                 self._ArtForm_closed.connect(self.slot_FormArticle_closed)
 
     
@@ -330,7 +336,21 @@ class MainWindow(QWidget):
         except:
             print ('MainWindow.RollbackSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
 
-
+    #############################################################################
+    # Imprimer
+    #############################################################################
+    def imprimer(self):
+        printer=QPrinter()
+     
+        doc=QTextDocument("Hello")
+#         doc=QTextDocument()
+#         doc.setHtml("<body> salut </body>")
+        dialog = QPrintDialog(printer)
+        dialog.setModal(True)
+        dialog.setWindowTitle("Print Document" )
+        # dialog.addEnabledOption(QAbstractPrintDialog.PrintSelection)
+        if dialog.exec_() == True:
+            doc.print(printer)
 #################################################################################
 # programme principal
 #################################################################################
