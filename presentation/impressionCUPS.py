@@ -79,7 +79,8 @@ while 1:
     # Lister les taches - n'affiche pas les taches annulées
     ####################################################################
     elif (choix == '7'):
-        dicjob = conn.getJobs()
+#         dicjob = conn.getJobs(which_jobs='completed') #récupère jobs terminés
+        dicjob = conn.getJobs() # par défaut which = 'not-completed'
         for id in dicjob.keys():
             print('JOB_ID = ', str(id))
             print('Etat = ', conn.getJobAttributes(id))
