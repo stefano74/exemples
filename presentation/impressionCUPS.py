@@ -80,7 +80,7 @@ while 1:
     ####################################################################
     elif (choix == '7'):
 #         dicjob = conn.getJobs(which_jobs='completed') #récupère jobs terminés
-        dicjob = conn.getJobs() # par défaut which = 'not-completed'
+        dicjob = conn.getJobs() # par défaut which_jobs = 'not-completed'
         for id in dicjob.keys():
             print('JOB_ID = ', str(id))
             print('Etat = ', conn.getJobAttributes(id))
@@ -90,17 +90,18 @@ while 1:
     ####################################################################
     elif (choix == '8'):
         jobid = int(input('Job Id à déplacer = '))
-        conn.moveJob('ipp://localhost:631/printers/Note', jobid, 'ipp://localhost:631/printers/Note2')
+        #deplacer de Note -> Note2
+        conn.moveJob('ipp://localhost:631/printers/Note', jobid, 'ipp://localhost:631/printers/Note2') 
         
     ####################################################################
     # Rejeter une imprimante - l'envoi d'une tache provoque une exception
     ####################################################################
     elif (choix == '9'):
         name = input('nom imprimante = ')
-        conn.rejectJobs(name) # retourne une exception la destination n'accepte pas de tache -> acceptJobs 
+        conn.rejectJobs(name) # retourne une exception: la destination n'accepte pas de tache -> acceptJobs 
     
     ####################################################################
-    # Rejeter une imprimante - l'envoi d'une tache est authorisé
+    # Rejeter une imprimante - l'envoi d'une tache est autorisé
     ####################################################################
     elif (choix == '10'):
         name = input('nom imprimante = ')
