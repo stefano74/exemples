@@ -2,23 +2,21 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import xmlrpc.client
 from datetime import date
-from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QTableView, \
-    QHeaderView, QTableWidgetItem, QLabel, QLineEdit, QAbstractItemView, QDateEdit
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QTextDocument
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, \
+    QTableWidgetItem, QLabel, QLineEdit, QAbstractItemView, QDateEdit, QComboBox
+from PyQt5.QtGui import QTextDocument
 from PyQt5.Qt import QTableWidget
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
-from _random import Random
 import string
 from random import sample
 import random
 from xmlrpc.client import ProtocolError
-import http
 from _datetime import datetime
-import markupsafe
+from proxy import ProxyXMLRPC, ProxyREST
+from _ast import Delete
 
 
 #################################################################################
@@ -60,11 +58,12 @@ class FormArticle(QWidget):
             self.edtLib.setText(aLibelle)
             self.edtPri.setText(str(aPrix))
             self.edtDat.setDate(aDate)
+            
             self.btnOk = QPushButton('OK')
             self.btnCancel = QPushButton('Annuler')  
             self.btnOk.setMaximumSize(100, 30)  
             self.btnCancel.setMaximumSize(100, 30)
-            
+
             self._signal_closed = aSignal
             self.btnOk.clicked.connect(self.AjouterArticle)  
             self.btnCancel.clicked.connect(self.Annuler)  
@@ -125,6 +124,9 @@ class MainWindow(QWidget):
     MODE_ADD = 'add'
     MODE_MOD = 'mod'
     
+    PROXY_XMLRPC = 'Proxy XML-RPC'
+    PROXY_REST   = 'Proxy REST'
+
     _mode = ''
 
     _ArtForm_closed = pyqtSignal(['QString', 'QString', 'QString'], name = "ArtFormFermeture")
@@ -133,17 +135,18 @@ class MainWindow(QWidget):
         super(MainWindow, self).__init__(parent)
         
         try:
+            self.__adr_serveur = aConnection
+
             #connection serveur d'application
-#            self._proxy = xmlrpc.client.ServerProxy('http://localhost:8888')
-            self._proxy = xmlrpc.client.ServerProxy(aConnection, verbose=True)
+            self.__proxy = ProxyXMLRPC(self.__adr_serveur)
             
             #demande la conf d'affichage
-            if self._proxy.afficherMainWindow():
+            if self.__proxy.afficherMainWindow():
                 
-                self._tableWidget   = QTableWidget()
-                self._tableWidget.setSelectionMode(QAbstractItemView.SingleSelection) 
-                self._tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-                self._tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+                self.tableWidget   = QTableWidget()
+                self.tableWidget.setSelectionMode(QAbstractItemView.SingleSelection) 
+                self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+                self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
                 #alimentation de QTableView
                 self.afficherArticles()
@@ -168,17 +171,25 @@ class MainWindow(QWidget):
                 btnQui.setMaximumSize(100, 30)
                 btnImp.setMaximumSize(100, 30)
 
+                self.cmbProxy = QComboBox()
+                self.cmbProxy.setMaximumSize(200, 30)
+                self.cmbProxy.addItem(self.PROXY_XMLRPC)
+                self.cmbProxy.addItem(self.PROXY_REST)
+                self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
+
                 mainLayout = QGridLayout()
-                mainLayout.addWidget(self._tableWidget, 0, 0, 1, 4)
-                mainLayout.addWidget(btnAdd, 1, 1)
-                mainLayout.addWidget(btnMod, 1, 2)
-                mainLayout.addWidget(btnSup, 1, 3)
-                mainLayout.addWidget(btnCom, 2, 1)
-                mainLayout.addWidget(btnGen, 2, 2)
-                mainLayout.addWidget(btnRef, 2, 3)
-                mainLayout.addWidget(btnRol, 3, 1)
-                mainLayout.addWidget(btnImp, 3, 2)
-                mainLayout.addWidget(btnQui, 3, 3)
+                mainLayout.addWidget(self.cmbProxy, 0, 1)
+                
+                mainLayout.addWidget(self.tableWidget, 1, 1, 1, 4)
+                mainLayout.addWidget(btnAdd, 2, 1)
+                mainLayout.addWidget(btnMod, 2, 2)
+                mainLayout.addWidget(btnSup, 2, 3)
+                mainLayout.addWidget(btnCom, 3, 1)
+                mainLayout.addWidget(btnGen, 3, 2)
+                mainLayout.addWidget(btnRef, 3, 3)
+                mainLayout.addWidget(btnRol, 4, 1)
+                mainLayout.addWidget(btnImp, 4, 2)
+                mainLayout.addWidget(btnQui, 4, 3)
                     
                 self.setLayout(mainLayout)
                 self.setWindowTitle('Articles - ' + aConnection)
@@ -192,6 +203,7 @@ class MainWindow(QWidget):
                 btnRol.clicked.connect(self.RollbackSession)
                 btnQui.clicked.connect(self.fermerAppli)
                 btnImp.clicked.connect(self.imprimer)
+                self.cmbProxy.currentIndexChanged.connect(self.changerProxy)
                 self._ArtForm_closed.connect(self.slot_FormArticle_closed)
 
     
@@ -202,25 +214,30 @@ class MainWindow(QWidget):
             print ("HTTP/HTTPS headers: %s" % err.headers)
             print ("Error code: %d" % err.errcode)
             print ("Error message: %s" % err.errmsg)
+        
+        except Exception:
+            print (self.__proxy)
+            print ('MainWindow.__init__ Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+            
     #############################################################################
     # Affiche tous les articles dans QTableWidget
     #############################################################################
     def afficherArticles(self):
         try:
             i = 0
-            lstArt = self._proxy.listerArticles()
-            self._tableWidget.clear()
+            lstArt = self.__proxy.listerArticles()
+            self.tableWidget.clear()
                 
-            self._tableWidget.setRowCount(len(lstArt))
-            self._tableWidget.setColumnCount(4)
-            self._tableWidget.setHorizontalHeaderLabels(('Id;Libellé;Prix;Date').split(';'))
+            self.tableWidget.setRowCount(len(lstArt))
+            self.tableWidget.setColumnCount(4)
+            self.tableWidget.setHorizontalHeaderLabels(('Id;Libellé;Prix;Date').split(';'))
 
                                         
             for art in lstArt:
-                self._tableWidget.setItem(i, 0, QTableWidgetItem(str(art[0])))
-                self._tableWidget.setItem(i, 1, QTableWidgetItem(str(art[1])))
-                self._tableWidget.setItem(i, 2, QTableWidgetItem(str(art[2])))
-                self._tableWidget.setItem(i, 3, QTableWidgetItem(str(art[3])))
+                self.tableWidget.setItem(i, 0, QTableWidgetItem(str(art[0])))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(str(art[1])))
+                self.tableWidget.setItem(i, 2, QTableWidgetItem(str(art[2])))
+                self.tableWidget.setItem(i, 3, QTableWidgetItem(str(art[3])))
                 i = i + 1
         
         except:
@@ -255,8 +272,8 @@ class MainWindow(QWidget):
     #############################################################################
     def SupprimerArticle(self):
         try:
-            if self._tableWidget.selectedItems():
-                self._proxy.supprimerArticle(self._tableWidget.selectedItems()[1].text())
+            if self.tableWidget.selectedItems():
+                self.__proxy.supprimerArticle(self.tableWidget.selectedItems()[0].text())
                 self.afficherArticles()
         except:
             print ('MainWindow.SupprimerArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
@@ -267,10 +284,10 @@ class MainWindow(QWidget):
     def ModifierArticle(self):
         try:
             self._mode = self.MODE_MOD
-            if self._tableWidget.selectedItems():
-                self.AfficherFormulaire(self._tableWidget.selectedItems()[1].text(), 
-                                        float(self._tableWidget.selectedItems()[2].text()),
-                                        datetime.strptime(self._tableWidget.selectedItems()[3].text(), '%Y-%M-%d').date())                
+            if self.tableWidget.selectedItems():
+                self.AfficherFormulaire(self.tableWidget.selectedItems()[1].text(), 
+                                        float(self.tableWidget.selectedItems()[2].text()),
+                                        datetime.strptime(self.tableWidget.selectedItems()[3].text(), '%Y-%M-%d').date())                
         except:
             print ('MainWindow.ModifierArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
             
@@ -280,9 +297,9 @@ class MainWindow(QWidget):
     def slot_FormArticle_closed(self, alibelle, aprix, adate):
         try:
             if self._mode == self.MODE_ADD:
-                self._proxy.ajouterArticle(alibelle, aprix, adate)
+                self.__proxy.ajouterArticle(alibelle, aprix, adate)
             elif self._mode == self.MODE_MOD:
-                self._proxy.modifierArticle(int(self._tableWidget.selectedItems()[0].text()), alibelle, aprix, adate)
+                self.__proxy.modifierArticle(int(self.tableWidget.selectedItems()[0].text()), alibelle, aprix, adate)
             else:
                 print('MainWindow.slot_FormArticle_closed : mode inconnu')
 
@@ -303,7 +320,7 @@ class MainWindow(QWidget):
                 i = i + 1
                 libelle = ''.join(sample(pop, 12))
                 prix = random.uniform(1, 100)
-                self._proxy.ajouterArticle(libelle, prix)
+                self.__proxy.ajouterArticle(libelle, prix)
                 if i%500 == 0:
                     print('RemplirArticles')
         except:
@@ -314,7 +331,7 @@ class MainWindow(QWidget):
     #############################################################################
     def CommitSession(self):
         try:
-            self._proxy.commitSession()
+            self.__proxy.commitSession()
         except:
             print ('MainWindow.CommitSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
             
@@ -323,7 +340,7 @@ class MainWindow(QWidget):
     #############################################################################
     def RollbackSession(self):
         try:
-            self._proxy.rollbackSession()
+            self.__proxy.rollbackSession()
         except:
             print ('MainWindow.RollbackSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
 
@@ -351,6 +368,34 @@ class MainWindow(QWidget):
         # dialog.addEnabledOption(QAbstractPrintDialog.PrintSelection)
         if dialog.exec_() == True:
             doc.print(printer)
+            
+    
+    ###########################################################################
+    # slot combo Proxy modifié
+    #############################################################################
+    def changerProxy(self):
+        
+        try:
+            if self.__proxy:
+                Delete(self.__proxy)
+            
+            if self.cmbProxy.currentText() == self.PROXY_XMLRPC:
+                self.__proxy = ProxyXMLRPC(self.__adr_serveur)
+            elif self.cmbProxy.currentText() == self.PROXY_REST:
+                self.__proxy = ProxyREST(self.__adr_serveur)
+            else:
+                self.cmbProxy.currentIndexChanged.disconnect()
+                self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
+                self.__proxy = ProxyXMLRPC(self.__adr_serveur)
+                self.cmbProxy.currentIndexChanged.connect(self.changerProxy)
+
+                raise Exception("Le proxy n'est pas défini")
+            
+            self.afficherArticles()
+        except:
+            print ('MainWindow.changerProxy Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+            
+                    
 #################################################################################
 # programme principal
 #################################################################################
