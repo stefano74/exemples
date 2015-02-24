@@ -15,7 +15,7 @@ from random import sample
 import random
 from xmlrpc.client import ProtocolError
 from _datetime import datetime
-from proxy import ProxyXMLRPC, ProxyREST
+from proxy import ProxyXMLRPC, ProxyREST, ProxyWeb
 from _ast import Delete
 
 
@@ -126,6 +126,7 @@ class MainWindow(QWidget):
     
     PROXY_XMLRPC = 'Proxy XML-RPC'
     PROXY_REST   = 'Proxy REST'
+    PROXY_WEB   = 'Proxy WEB'
 
     _mode = ''
 
@@ -175,6 +176,7 @@ class MainWindow(QWidget):
                 self.cmbProxy.setMaximumSize(200, 30)
                 self.cmbProxy.addItem(self.PROXY_XMLRPC)
                 self.cmbProxy.addItem(self.PROXY_REST)
+                self.cmbProxy.addItem(self.PROXY_WEB)
                 self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
 
                 mainLayout = QGridLayout()
@@ -383,6 +385,8 @@ class MainWindow(QWidget):
                 self.__proxy = ProxyXMLRPC(self.__adr_serveur)
             elif self.cmbProxy.currentText() == self.PROXY_REST:
                 self.__proxy = ProxyREST(self.__adr_serveur)
+            elif self.cmbProxy.currentText() == self.PROXY_WEB:
+                self.__proxy = ProxyWeb(self.__adr_serveur)
             else:
                 self.cmbProxy.currentIndexChanged.disconnect()
                 self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)

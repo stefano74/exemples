@@ -85,12 +85,12 @@ class ProxyXMLRPC(Proxy):
 #################################################################################
 class ProxyREST(Proxy):
 
-    ADR_REST    = '/serveurREST/'
+    ADR_REST = '/serveuREST/'
 
     def __init__(self, aConnection=None):
         super(ProxyREST, self).__init__(aConnection + self.ADR_REST)
         
-        self.__headers = {'content-type': 'application/json'}
+        self.__headers = {'content-type': 'application/json', 'accept': 'application/json'}
         
     def afficherMainWindow(self):
         return True
@@ -100,9 +100,7 @@ class ProxyREST(Proxy):
         url = self._url + "articles/"
 
         resp = requests.get(url=url, headers=self.__headers)
-        
         resp.raise_for_status()
-
         resp.encoding = 'utf-8'
         dicolist = resp.json()
         print('articles reçus = ', dicolist)
@@ -153,4 +151,45 @@ class ProxyREST(Proxy):
         print('resp.status_code = ', resp.status_code)
 
         resp.raise_for_status()
+
+
+#################################################################################
+#   classe Proxy pour serveur de type REST
+#################################################################################
+class ProxyWeb(Proxy):
+
+    ADR_WEB = '/serveurweb/'
+
+    def __init__(self, aConnection=None):
+        super(ProxyWeb, self).__init__(aConnection + self.ADR_WEB)
+        
+        self.__headers = {'content-type': 'application/json', 'accept': 'application/json'}
+        
+    def afficherMainWindow(self):
+        return True
+
+    def listerArticles(self):
+
+        url = self._url + "articles/"
+
+        resp = requests.get(url=url, headers=self.__headers)
+        resp.raise_for_status()
+
+        resp.encoding = 'utf-8'
+        dicolist = json.loads(resp.json()) # a utiliser si le serveur renvoie le serializer json
+#         dicolist = resp.json() # a utiliser si le serveur envoie une liste de dict
+        #ATTENTION : les 2 méthodes list de dict ou serializer n ont pas le meme format json
+
+        print('articles reçus = ', dicolist, type(dicolist))
+        
+        result = []
+        article = []
+        for dico in dicolist:
+            article.append(dico['pk'])
+            article.append(dico['fields']['libelle'])
+            article.append(dico['fields']['prix'])
+            article.append(dico['fields']['date'])
+            result.append(article)
+            article = []
+        return result
         
