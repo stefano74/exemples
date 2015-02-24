@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, JsonResponse,\
+    HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.forms.models import ModelForm
 
 from serveurweb.models import Articles
 from serveurweb.models import Familles
+from django.core import serializers
+import json
 
 #####################################################################################################################
 # Page racine
@@ -29,6 +32,19 @@ class articles(generic.ListView):
 class form_article(ModelForm):
     class Meta:
         model = Articles
+        
+def list_articles(request):
+    
+    articles_list = Articles.objects.all()
+    if request.method == 'GET':
+        print(request.META.get('HTTP_ACCEPT'))
+        print('DATA = ', articles_list, type(articles_list))
+        if request.META.get('HTTP_ACCEPT') == 'application/json':
+#             data = list(Articles.objects.all().values()) # list de dict 
+            data = serializers.serialize('json', articles_list)
+            return JsonResponse(data, safe=False) # retourne une list de dico ou un str et non un dict
+        else:
+            return render(request, 'serveurweb/articles_list.html', {'articles_list': articles_list})
         
 def detail_article(request, article_id):
     

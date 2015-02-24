@@ -19,8 +19,8 @@ class Articles(models.Model):
     prix    = models.FloatField()
     date    = models.DateField(default = '2015-01-23')
 
-    def __str__(self):
-        return "<Article(id='%d', libelle='%s', famille = '%s', prix='%f', date='%s')>" % (self.id, self.libelle, self.famille, self.prix, self.date)
+#     def __str__(self):
+#         return "<Article(id='%d', libelle='%s', famille = '%s', prix='%f', date='%s')>" % (self.id, self.libelle, self.famille, self.prix, self.date)
 
     class Meta:
         db_table = 'articles'
