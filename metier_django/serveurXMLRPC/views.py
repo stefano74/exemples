@@ -4,6 +4,7 @@
 # from django.http.response import HttpResponse
 import sys
 from serveurweb.models import Articles
+from django.shortcuts import get_object_or_404
 
 ##############################################################################
 #Retourne la listes des articles de la table articles
@@ -29,7 +30,7 @@ def afficherMainWindow():
 ##############################################################################
 def modifierArticle(aid, alibelle, aprix, adate):
 	try:
-		art = Articles.objects.get(id = aid )
+		art = get_object_or_404(Articles, pk=aid)
 		art.libelle = alibelle
 		art.prix = aprix
 		art.date = adate
@@ -40,9 +41,9 @@ def modifierArticle(aid, alibelle, aprix, adate):
 ##############################################################################
 #supprime l article de la table articles
 ##############################################################################
-def supprimerArticle(libelle):
+def supprimerArticle(aid):
 	try:
-		Articles.objects.get(libelle=libelle).delete()
+		get_object_or_404(Articles, pk=aid).delete()
 	except:
 		print ('metier_django.serveurXMLRPC.views.supprimerArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
 
