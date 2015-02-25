@@ -192,4 +192,13 @@ class ProxyWeb(Proxy):
             result.append(article)
             article = []
         return result
+
+    def modifierArticle(self, aid, alibelle, aprix, adate):
+        pass
+    
+    def supprimerArticle(self, alibelle):
+        pass
+    
+    def ajouterArticle(self, alibelle, aprix, adate):
+        pass
         
