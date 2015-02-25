@@ -14,6 +14,38 @@ from django.core import serializers
 import json
 
 #####################################################################################################################
+# class Response Json
+#####################################################################################################################
+class JSONResponseMixin(object):
+    """
+    A mixin that can be used to render a JSON response.
+    """
+    def render_to_json_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        return JsonResponse(
+            self.get_data(context),
+            safe=False,
+            **response_kwargs
+        )
+
+
+
+    def get_data(self, context):
+        """
+        Returns an object that will be serialized as JSON by json.dumps().
+        """
+        # Note: This is *EXTREMELY* naive; in reality, you'll need
+        # to do much more complex handling to ensure that arbitrary
+        # objects -- such as Django model instances or querysets
+        # -- can be serialized as JSON.*
+        return serializers.serialize('json', context)
+#         return json.dumps(context)
+#         return json.dumps([{'id':'1'}, {'libelle':'choco'}, {'prix':'2'}, {'date':'2015-02-25'}])
+
+
+#####################################################################################################################
 # Page racine
 #####################################################################################################################
 def index(request):
@@ -25,9 +57,17 @@ def index(request):
 # Articles
 #####################################################################################################################
 
-class articles(generic.ListView):
+class articles(JSONResponseMixin, generic.ListView):
     def get_queryset(self):
         return Articles.objects.all()
+
+    def render_to_response(self, context):
+        # Look for a 'format=json' GET argument
+#         if self.request.GET.get('format') == 'json':
+        if self.request.META.get('HTTP_ACCEPT') == 'application/json':
+            return self.render_to_json_response(self.get_queryset())
+        else:
+            return super(articles, self).render_to_response(context)
 
 class form_article(ModelForm):
     class Meta:
@@ -82,7 +122,7 @@ class form_famille(ModelForm):
 class familles(generic.ListView):
         def get_queryset(self):
             return Familles.objects.order_by('id')
-
+       
 class detail_famille(generic.DetailView):
     model = Familles
 

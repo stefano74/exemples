@@ -7,8 +7,8 @@ from serveurweb import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-#     url(r'^articles/$', views.articles.as_view(), name='articles_list'),
-    url(r'^articles/$', views.list_articles, name='articles_list'),
+    url(r'^articles/$', views.articles.as_view(), name='articles_list'), # version CBV
+#     url(r'^articles/$', views.list_articles, name='articles_list'), # version FBV
     url(r'^articles/(?P<article_id>\d+)/$', views.detail_article, name='detail_article'),
     url(r'^articles/(?P<article_id>\d+)/del/$', views.supprimer_article, name='supprimer_article'),
     url(r'^articles/add/$', views.ajouter_article, name='ajouter_article'),
