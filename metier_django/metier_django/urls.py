@@ -8,6 +8,6 @@ urlpatterns = patterns('',
 
     url(r'^serveurweb/',    include('serveurweb.urls')),
     url(r'^serveurXMLRPC/', include('serveurXMLRPC.urls')),
-    url(r'^admin/',         include(admin.site.urls)),
     url(r'^serveurREST/', include('serveurREST.urls')),
+    url(r'^admin/',         include(admin.site.urls)),
   )
