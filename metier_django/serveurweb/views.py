@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404
-from django.http.response import HttpResponseRedirect, JsonResponse,\
-    HttpResponse
+from django.http.response import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.forms.models import ModelForm
@@ -17,33 +16,16 @@ import json
 # class Response Json
 #####################################################################################################################
 class JSONResponseMixin(object):
-    """
-    A mixin that can be used to render a JSON response.
-    """
+
     def render_to_json_response(self, context, **response_kwargs):
-        """
-        Returns a JSON response, transforming 'context' to make the payload.
-        """
         return JsonResponse(
             self.get_data(context),
             safe=False,
             **response_kwargs
         )
 
-
-
     def get_data(self, context):
-        """
-        Returns an object that will be serialized as JSON by json.dumps().
-        """
-        # Note: This is *EXTREMELY* naive; in reality, you'll need
-        # to do much more complex handling to ensure that arbitrary
-        # objects -- such as Django model instances or querysets
-        # -- can be serialized as JSON.*
         return serializers.serialize('json', context)
-#         return json.dumps(context)
-#         return json.dumps([{'id':'1'}, {'libelle':'choco'}, {'prix':'2'}, {'date':'2015-02-25'}])
-
 
 #####################################################################################################################
 # Page racine
@@ -54,7 +36,7 @@ def index(request):
     return render(request, 'serveurweb/index.html', context)
 
 #####################################################################################################################
-# Articles
+# Articles : solution CBV
 #####################################################################################################################
 
 class articles(JSONResponseMixin, generic.ListView):
@@ -73,8 +55,56 @@ class form_article(ModelForm):
     class Meta:
         model = Articles
         
-def list_articles(request):
+class AjoutArticle(JSONResponseMixin, generic.CreateView):
+    model = Articles
+    success_url = reverse_lazy('articles_list')
     
+    def post(self, request, *args, **kwargs):
+        if self.request.META.get('HTTP_ACCEPT') == 'application/json':
+            data = request.body.decode('utf-8')
+            data = json.loads(data)
+            art = Articles(libelle = data['libelle'], prix = data['prix'], date=data['date'])
+            art.save()
+            return self.render_to_json_response([get_object_or_404(Articles, pk=art.id), ]) # le serializer ne prend que QuerySet en param
+        else:
+            return super(AjoutArticle, self).post(request, *args, **kwargs)
+
+class ModifArticle(JSONResponseMixin, generic.UpdateView):
+    
+    model = Articles
+    success_url = reverse_lazy('articles_list')
+
+    def put(self, *args, **kwargs):
+        if self.request.META.get('HTTP_ACCEPT') == 'application/json':
+            data = self.request.body.decode('utf-8')
+            data = json.loads(data)
+            art = get_object_or_404(Articles, pk=kwargs['pk'])
+            art.libelle = data['libelle']
+            art.prix = data['prix']
+            art.date = data['date']
+            art.save()
+            return self.render_to_json_response([get_object_or_404(Articles, pk=kwargs['pk']), ]) # le serializer ne prend que QuerySet en param
+        else:
+            return generic.UpdateView.put(self, *args, **kwargs)
+
+class SuppressionArticle(JSONResponseMixin, generic.DeleteView):
+    
+    def delete(self, request, *args, **kwargs):
+        if self.request.META.get('HTTP_ACCEPT') == 'application/json':
+            art = get_object_or_404(Articles, pk=kwargs['pk'])
+            art.delete()
+            return self.render_to_json_response({}) # ne renvoie aucune donnée
+        else:
+            return generic.DeleteView.delete(self, request, *args, **kwargs)
+        
+#####################################################################################################################
+# Articles : solution FBV 
+# URLs à modifier !!!
+#####################################################################################################################
+
+# avec exemple reponse JSON        
+def list_articles(request):
+     
     articles_list = Articles.objects.all()
     if request.method == 'GET':
         print(request.META.get('HTTP_ACCEPT'))
@@ -85,25 +115,25 @@ def list_articles(request):
             return JsonResponse(data, safe=False) # retourne une list de dico ou un str et non un dict
         else:
             return render(request, 'serveurweb/articles_list.html', {'articles_list': articles_list})
-        
+         
 def detail_article(request, article_id):
-    
+     
     article =get_object_or_404(Articles, pk=article_id)
     form = form_article(request.POST or None, instance=article)
     if form.is_valid():
         form.save()
         return HttpResponseRedirect(reverse('articles_list'))
     return render(request, 'serveurweb/article_detail.html', {'form':form})
-
+ 
 def supprimer_article(request, article_id): 
-    
+     
     article = get_object_or_404(Articles, pk=article_id)
     if request.method == 'POST':
         article.delete()
         return HttpResponseRedirect(reverse('articles_list'))
     return render(request, 'serveurweb/articles_confirm_delete.html', {'object': article})
-    
-
+     
+ 
 def ajouter_article(request): 
     form = form_article(request.POST or None)
     if form.is_valid():
@@ -123,9 +153,6 @@ class familles(generic.ListView):
         def get_queryset(self):
             return Familles.objects.order_by('id')
        
-class detail_famille(generic.DetailView):
-    model = Familles
-
 class ajouter_famille(generic.CreateView):
     model = Familles
     success_url = reverse_lazy('familles_list')

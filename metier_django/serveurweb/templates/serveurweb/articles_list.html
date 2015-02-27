@@ -8,10 +8,10 @@
 		<tr>
 			<td>{{article.id}}</td>
 			<td>{{article.famille}}</td>
-			<td><a href="{% url 'detail_article' article.id %}">{{article.libelle}}</a></td>
+			<td><a href="{% url 'ModifArticle' article.id %}">{{article.libelle}}</a></td>
 			<td>{{article.prix}}</td>
 			<td>{{article.date}}</td>
-			<td><a href="{% url 'supprimer_article' article.id %}">supprimer</a></td>
+			<td><a href="{% url 'SuppressionArticle' article.id %}">supprimer</a></td>
 		</tr>
 	{% endfor %}
 </table>
@@ -19,5 +19,5 @@
 	<p>aucun article</p>
 {% endif %}
 <br />
-<input type="button" value="Ajouter" onclick="window.location.href='{% url 'ajouter_article' %}'"></input>
+<input type="button" value="Ajouter" onclick="window.location.href='{% url 'AjoutArticle' %}'"></input>
 <input type="button" value="Retour" onclick="window.location.href='{% url 'index' %}'"></input>

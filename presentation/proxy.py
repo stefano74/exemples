@@ -85,7 +85,7 @@ class ProxyXMLRPC(Proxy):
 #################################################################################
 class ProxyREST(Proxy):
 
-    ADR_REST = '/serveuREST/'
+    ADR_REST = '/serveurREST/'
 
     def __init__(self, aConnection=None):
         super(ProxyREST, self).__init__(aConnection + self.ADR_REST)
@@ -194,11 +194,39 @@ class ProxyWeb(Proxy):
         return result
 
     def modifierArticle(self, aid, alibelle, aprix, adate):
-        pass
+
+        url = self._url + "articles/" + str(aid) + "/"
+        
+        article = {'libelle': alibelle, 'prix': str(aprix), 'date': str(adate)}
+        resp = requests.put(url, data=json.dumps(article), headers=self.__headers)
+        
+        #revoir l'article modifié
+        print('article modifié = ', json.loads(resp.json()))
+        print('resp.status_code = ', resp.status_code)
+        
+        resp.raise_for_status()
     
-    def supprimerArticle(self, alibelle):
-        pass
+    def supprimerArticle(self, aid):
+        
+        url = self._url + "articles/" + str(aid) + "/del/"
+        resp = requests.delete(url, headers=self.__headers)
+
+        print("resp = ", json.loads(resp.json()))
+        print('resp.status_code = ', resp.status_code)
+
+        resp.raise_for_status()
     
     def ajouterArticle(self, alibelle, aprix, adate):
-        pass
+
+        url = self._url + "articles/add/"
+        
+        article = {'libelle': alibelle, 'prix': str(aprix), 'date': str(adate)}
+        resp = requests.post(url, data=json.dumps(article), headers=self.__headers)
+#         resp = requests.post(url, data=article, headers=self.__headers)
+
+        #revoir l'article ajouté
+        print('article ajouté = ', json.loads(resp.json()))
+        print('resp.status_code = ', resp.status_code)
+
+        resp.raise_for_status()
         
