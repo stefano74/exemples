@@ -5,29 +5,28 @@
 import xmlrpc.client
 import json
 import requests
-import sys
 
-#################################################################################
-#   classe d'interface Proxy
-#################################################################################
 class Proxy:
-    
-    def __init__(self, aConnection=None):
+    """
+    classe d'interface Proxy
+    """    
+    def __init__(self, aConnection=None, aApplication=None):
         
-        self._url = aConnection # protected : simple '_'
+        self._serveur = aConnection # protected : simple '_'
+        self._url = aConnection + aApplication # protected : simple '_'
 
-    #############################################################################
-    # Permet d'afficher la MainWidow
-    # Return boolean
-    #############################################################################
+        
     def afficherMainWindow(self):
+        """
+        permet de demander l'affichage la MainWindow
+        retourne boolean
+        """
         pass
     
-    #############################################################################
-    # retourne la liste des articles
-    # Return [...]
-    #############################################################################
     def listerArticles(self):
+        """
+        Retourne la liste des articles
+        """
         pass
     
     def modifierArticle(self, aid, alibelle, aprix, adate):
@@ -40,22 +39,20 @@ class Proxy:
         pass
     
 
-#################################################################################
-#   classe Proxy pour serveur de type XMLRPC
-#################################################################################
-# class ProxyXMLRPC(xmlrpc.client.ServerProxy):
 class ProxyXMLRPC(Proxy):
+    """
+    Classe Proxy XMLRPC
+    """
 
     ADR_XMLRPC  = '/serveurXMLRPC/'
 
     def __init__(self, aConnection=None):
-        super(ProxyXMLRPC, self).__init__(aConnection + self.ADR_XMLRPC)
+        super(ProxyXMLRPC, self).__init__(aConnection, self.ADR_XMLRPC)
          
         try:
             self.__proxy = xmlrpc.client.ServerProxy(self._url, verbose=True, allow_none=True) 
         except Exception:
-            print("le client XMLRPC n'est pas initialisé !")
-            raise Exception
+            raise Exception("le client XMLRPC n'est pas initialisé !")
         #Proxy.__init__(self, aConnection)
 #         xmlrpc.client.ServerProxy.__init__(self, aConnection, verbose=True)
     
@@ -80,15 +77,15 @@ class ProxyXMLRPC(Proxy):
         self.__proxy.ajouterArticle(alibelle, aprix, adate)
         
 
-#################################################################################
-#   classe Proxy pour serveur de type REST
-#################################################################################
 class ProxyREST(Proxy):
+    """
+    Classe Proxy pour serveurREST
+    """
 
     ADR_REST = '/serveurREST/'
 
     def __init__(self, aConnection=None):
-        super(ProxyREST, self).__init__(aConnection + self.ADR_REST)
+        super(ProxyREST, self).__init__(aConnection, self.ADR_REST)
         
         self.__headers = {'content-type': 'application/json', 'accept': 'application/json'}
         
@@ -153,26 +150,61 @@ class ProxyREST(Proxy):
         resp.raise_for_status()
 
 
-#################################################################################
-#   classe Proxy pour serveur de type REST
-#################################################################################
 class ProxyWeb(Proxy):
+    """
+    Classe Proxy pour serveurweb
+    """
 
     ADR_WEB = '/serveurweb/'
 
     def __init__(self, aConnection=None):
-        super(ProxyWeb, self).__init__(aConnection + self.ADR_WEB)
+        super(ProxyWeb, self).__init__(aConnection, self.ADR_WEB)
         
-        self.__headers = {'content-type': 'application/json', 'accept': 'application/json'}
+
+        self.__headers = {'content-type'    : 'application/json',
+                          'accept'          : 'application/json',
+                          }
         
+        self.__cookies = None    # cookies pour id session Django
+
+    def connecter(self, aUsername, aPassword):
+        
+        resp = requests.post(self._url + 'connexion/', data=json.dumps({'username': aUsername, 'password': aPassword}), headers=self.__headers)
+
+        print('resp.status_code = ', resp.status_code)
+        
+        if resp.status_code == 200:
+            self.__cookies = dict(resp.cookies) # cookies contient sessionid et csrftoken
+            self.__headers['X-CSRFToken'] = self.__cookies['csrftoken']
+            print('cookies = ', self.__cookies)
+            return True
+        else:
+            return False
+    
+    def deconnecter(self):
+
+        url = self._url + "deconnexion/"
+        self.__headers['Referer'] = url
+
+        resp = requests.post(url, headers=self.__headers, cookies=self.__cookies)
+        resp.raise_for_status()
+        
+        print('resp.status_code = ', resp.status_code)
+        
+        if resp.status_code == 200:
+            self.__cookies = None
+            return True
+        else:
+            return False
+
     def afficherMainWindow(self):
         return True
 
     def listerArticles(self):
 
         url = self._url + "articles/"
-
-        resp = requests.get(url=url, headers=self.__headers)
+        
+        resp = requests.get(url=url, headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
 
         resp.encoding = 'utf-8'
@@ -197,36 +229,37 @@ class ProxyWeb(Proxy):
 
         url = self._url + "articles/" + str(aid) + "/"
         
+        self.__headers['Referer'] = url
+
         article = {'libelle': alibelle, 'prix': str(aprix), 'date': str(adate)}
-        resp = requests.put(url, data=json.dumps(article), headers=self.__headers)
-        
-        #revoir l'article modifié
-        print('article modifié = ', json.loads(resp.json()))
-        print('resp.status_code = ', resp.status_code)
-        
+        resp = requests.put(url, data=json.dumps(article), headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
-    
+                
+        #Dans le retour de la requête je renvoie l'article modifié
+        print('resp.status_code = ', resp.status_code)
+        print('article modifié = ', json.loads(resp.json()))
+        
     def supprimerArticle(self, aid):
         
         url = self._url + "articles/" + str(aid) + "/del/"
-        resp = requests.delete(url, headers=self.__headers)
-
-        print("resp = ", json.loads(resp.json()))
-        print('resp.status_code = ', resp.status_code)
-
+        self.__headers['Referer'] = url
+        
+        resp = requests.delete(url, headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
+
+        print('resp.status_code = ', resp.status_code)
+        print("resp = ", json.loads(resp.json())) #réponse vide
+
     
     def ajouterArticle(self, alibelle, aprix, adate):
 
         url = self._url + "articles/add/"
-        
+        self.__headers['Referer'] = url
+
         article = {'libelle': alibelle, 'prix': str(aprix), 'date': str(adate)}
-        resp = requests.post(url, data=json.dumps(article), headers=self.__headers)
-#         resp = requests.post(url, data=article, headers=self.__headers)
-
-        #revoir l'article ajouté
-        print('article ajouté = ', json.loads(resp.json()))
-        print('resp.status_code = ', resp.status_code)
-
+        resp = requests.post(url, data=json.dumps(article), headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
-        
+
+        #Dans le retour de la requête je renvoie l'article ajouté
+        print('resp.status_code = ', resp.status_code)
+        print('article ajouté = ', json.loads(resp.json()))

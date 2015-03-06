@@ -124,9 +124,11 @@ class MainWindow(QWidget):
     MODE_ADD = 'add'
     MODE_MOD = 'mod'
     
-    PROXY_XMLRPC = 'Proxy XML-RPC'
-    PROXY_REST   = 'Proxy REST'
-    PROXY_WEB   = 'Proxy WEB'
+    PROXY_XMLRPC    = 'Proxy XML-RPC'
+    PROXY_REST      = 'Proxy REST'
+    PROXY_WEB       = 'Proxy WEB'
+    PROXY_USER      = 'guest'
+    PROXY_PWD       = 'guest'
 
     _mode = ''
 
@@ -139,8 +141,10 @@ class MainWindow(QWidget):
             self.__adr_serveur = aConnection
 
             #connection serveur d'application
-            self.__proxy = ProxyXMLRPC(self.__adr_serveur)
-            
+            self.__proxy = ProxyWeb(self.__adr_serveur)
+            if not self.__proxy.connecter(self.PROXY_USER, self.PROXY_PWD):
+                raise Exception("Erreur connection proxy")
+                        
             #demande la conf d'affichage
             if self.__proxy.afficherMainWindow():
                 
@@ -177,7 +181,7 @@ class MainWindow(QWidget):
                 self.cmbProxy.addItem(self.PROXY_XMLRPC)
                 self.cmbProxy.addItem(self.PROXY_REST)
                 self.cmbProxy.addItem(self.PROXY_WEB)
-                self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
+                self.cmbProxy.setCurrentText(self.PROXY_WEB)
 
                 mainLayout = QGridLayout()
                 mainLayout.addWidget(self.cmbProxy, 0, 1)
@@ -351,6 +355,8 @@ class MainWindow(QWidget):
     #############################################################################
     def fermerAppli(self):
         try:
+            if type(self.__proxy) == ProxyWeb:
+                self.__proxy.deconnecter()
             self.close()
         except:
             print ('MainWindow.RollbackSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
@@ -379,6 +385,8 @@ class MainWindow(QWidget):
         
         try:
             if self.__proxy:
+                if type(self.__proxy) == ProxyWeb:
+                    self.__proxy.deconnecter()
                 Delete(self.__proxy)
             
             if self.cmbProxy.currentText() == self.PROXY_XMLRPC:
@@ -387,6 +395,8 @@ class MainWindow(QWidget):
                 self.__proxy = ProxyREST(self.__adr_serveur)
             elif self.cmbProxy.currentText() == self.PROXY_WEB:
                 self.__proxy = ProxyWeb(self.__adr_serveur)
+                if not self.__proxy.connecter(self.PROXY_USER, self.PROXY_PWD):
+                    raise Exception("Erreur connection proxy")
             else:
                 self.cmbProxy.currentIndexChanged.disconnect()
                 self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
