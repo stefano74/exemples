@@ -30,6 +30,8 @@ class TestReseau:
 		vResultat = False
 		
 		if (mode == const.MODE_MANU):
+			msg = "Mode Manuel"
+			vResultat = True # non testé pour un test manuel
 			while 1:    
 				response=os.system("ping -c 1 " + const.ADR_IP)
 				if response == 0:
@@ -44,7 +46,6 @@ class TestReseau:
 					break
 
 				time.sleep(1)
-			vResultat = True # non testé pour un test manuel
 		
 		elif (mode == const.MODE_AUTO):
 			cptOK = 0
@@ -55,12 +56,16 @@ class TestReseau:
 			
 			if (cptOK > 8):
 				vResultat = True
+				msg = "\033[0;37;42m Test Reseau OK \033[0m"
+			else:
+				msg = "\033[0;37;41m Test Reseau NOK \033[0m"
 		
 		else:
+			msg = "run : mode inconnu !"
 			pass
 		
 				
-		return vResultat
+		return vResultat, msg
 	
 	
 	############################################################################

@@ -36,9 +36,15 @@ class MenuTest:
 		"""
 
 		if (self.choix == 0):
-			print "run auto"
+			video = TestVideo()
 			reseau = TestReseau()
-#			if not reseau.run(MODE_AUTO) 
+			print "run auto"
+
+			vResultat, msg1 = video.run()
+			vResultat, msg2 = reseau.run(const.MODE_AUTO)
+
+			print msg1
+			print msg2
 			
 		elif (self.choix == 1):
 			print "run video"
@@ -48,12 +54,11 @@ class MenuTest:
 		elif (self.choix == 2):
 			print "run reseau"
 			reseau = TestReseau()
-			reseau.run()
+			reseau.run(const.MODE_MANU)
 			#del reseau # le destructeur est appele automatiquement a la sortie de la methode
 		else:
-			print "run else"
+			print "Choix inconnu !"
 	
-
 ##############################################################################
 if __name__ == "__main__":
 
