@@ -3,7 +3,7 @@
 # from xmlrpc.server import SimpleXMLRPCDispatcher
 # from django.http.response import HttpResponse
 import sys
-from serveurweb.models import Articles
+from serveurweb.core.models import Articles
 from django.shortcuts import get_object_or_404
 
 ##############################################################################

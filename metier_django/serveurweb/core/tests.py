@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from serveurweb.models import Familles, Articles
+from serveurweb.core.models import Familles, Articles
 from _datetime import date
 
 # Create your tests here.
@@ -28,6 +28,7 @@ class Test_Familles(TestCase):
         famille.save()
         famille = Familles.objects.get(libelle="test")
         self.assertEqual(famille.libelle, "test")
+
         
 class Test_Articles(TestCase):
     """

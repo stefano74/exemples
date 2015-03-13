@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from serveurweb.models import Articles, Familles
+from serveurweb.core.models import Articles, Familles
 
 
 class ArticlesAdmin(admin.ModelAdmin):

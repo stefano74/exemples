@@ -2,94 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404
-from django.http.response import HttpResponseRedirect, JsonResponse, Http404,\
-    HttpResponse
+from django.http.response import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.forms.models import ModelForm
 
-from serveurweb.models import Articles
-from serveurweb.models import Familles
+from serveurweb.core.models import Articles
+from serveurweb.core.models import Familles
 from django.core import serializers
 import json
-from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
-from django import forms
+from serveurweb.core.mixins import JSONResponseMixin
 
 
-class JSONResponseMixin(object):
-    """
-    classe de réponse en JSON
-    """
-
-    def render_to_json_response(self, context, **response_kwargs):
-        return JsonResponse(
-            self.get_data(context),
-            safe=False,
-            **response_kwargs
-        )
-
-    def get_data(self, context):
-        """
-        utilise le sérialiseur JSON de Django pour l'envoi
-        """
-        return serializers.serialize('json', context)
-
-class ConnexionForm(forms.Form):
-    username = forms.CharField(label="Nom d'utilisateur", max_length=30)
-    password = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
-    
-@csrf_exempt
-def connexion(request):
-    """
-    Connexion d'un utilisateur
-    """
-    if request.method == "POST":
-        if request.META.get('HTTP_ACCEPT') == 'application/json':
-            data = request.body.decode('utf-8')
-            data = json.loads(data)
-            username = data['username']
-            password = data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                else:
-                    raise Http404("L'utilisateur n'est pas activé.")
-            else:
-                    raise Http404("L'utilisateur n'existe pas.")
-            
-            return JsonResponse({})
-                    
-        else:
-            form = ConnexionForm(request.POST)
-            if form.is_valid():
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
-                user = authenticate(username=username, password=password)  # vérifie si les données sont correctes
-                if user:  # Si l'objet renvoyé n'est pas None
-                    if user.is_active:
-                        login(request, user)  # connecte l'utilisateur
-#                     else:
-#                         raise Http404("L'utilisateur n'est pas activé.")
-#                 else: # sinon une erreur sera affichée
-#                     raise Http404("L'utilisateur n'existe pas.")
-            return HttpResponseRedirect(reverse('index')) # la redirection avec LOGIN_REDIRECT_URL ne fonctionne pas (seulement pour CBV)
-    else:   
-        form = ConnexionForm()
-        return render(request, 'serveurweb/connexion.html', locals()) # locals retourne les variables locales dans un dictionnaire
-
-def deconnexion(request):
-    """
-    deconnexion
-    utiliser commande manage.py clearsessions pour supprimer les sessions expirées (2 semaines) de la DB 
-    """
-    logout(request)
-    if request.META.get('HTTP_ACCEPT') == 'application/json':
-        return JsonResponse({})
-    else:
-        return HttpResponseRedirect(reverse('connexion'))
-    
+   
 #####################################################################################################################
 # Page racine
 #####################################################################################################################
@@ -99,7 +24,7 @@ def index(request):
         return JSONResponseMixin.render_to_json_response({})
     else:
         context = {'page_titre' : 'serveurweb'}
-        return render(request, 'serveurweb/index.html', context)
+        return render(request, 'core/index.html', context)
 
 #####################################################################################################################
 # Articles : solution CBV
@@ -180,7 +105,7 @@ def list_articles(request):
             data = serializers.serialize('json', articles_list)
             return JsonResponse(data, safe=False) # retourne une list de dico ou un str et non un dict
         else:
-            return render(request, 'serveurweb/articles_list.html', {'articles_list': articles_list})
+            return render(request, 'core/articles_list.html', {'articles_list': articles_list})
          
 def detail_article(request, article_id):
      
@@ -189,7 +114,7 @@ def detail_article(request, article_id):
     if form.is_valid():
         form.save()
         return HttpResponseRedirect(reverse('articles_list'))
-    return render(request, 'serveurweb/article_detail.html', {'form':form})
+    return render(request, 'core/article_detail.html', {'form':form})
  
 def supprimer_article(request, article_id): 
      
@@ -197,7 +122,7 @@ def supprimer_article(request, article_id):
     if request.method == 'POST':
         article.delete()
         return HttpResponseRedirect(reverse('articles_list'))
-    return render(request, 'serveurweb/articles_confirm_delete.html', {'object': article})
+    return render(request, 'core/articles_confirm_delete.html', {'object': article})
      
  
 def ajouter_article(request): 
@@ -205,7 +130,7 @@ def ajouter_article(request):
     if form.is_valid():
         form.save()
         return HttpResponseRedirect(reverse('articles_list'))
-    return render(request, 'serveurweb/article_detail.html', {'form': form})
+    return render(request, 'core/article_detail.html', {'form': form})
     
 #####################################################################################################################
 # Familles

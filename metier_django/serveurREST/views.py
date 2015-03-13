@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -# Create your views here.
 
-from serveurweb.models import Articles
+from serveurweb.core.models import Articles
 from rest_framework import viewsets
 from serveurREST.serializers import ArticlesSerializer
 

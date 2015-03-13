@@ -169,7 +169,7 @@ class ProxyWeb(Proxy):
 
     def connecter(self, aUsername, aPassword):
         
-        resp = requests.post(self._url + 'connexion/', data=json.dumps({'username': aUsername, 'password': aPassword}), headers=self.__headers)
+        resp = requests.post(self._url + 'user/connexion/', data=json.dumps({'username': aUsername, 'password': aPassword}), headers=self.__headers)
 
         print('resp.status_code = ', resp.status_code)
         
@@ -183,7 +183,7 @@ class ProxyWeb(Proxy):
     
     def deconnecter(self):
 
-        url = self._url + "deconnexion/"
+        url = self._url + "user/deconnexion/"
         self.__headers['Referer'] = url
 
         resp = requests.post(url, headers=self.__headers, cookies=self.__cookies)

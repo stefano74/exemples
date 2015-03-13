@@ -11,9 +11,15 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import socket
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+#evite de prefixer les package core et user par serveurweb.
+# PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
+# ROOT_DIR = os.path.dirname(PROJECT_DIR)
+# APPS_DIR = os.path.realpath(os.path.join(ROOT_DIR, 'serveurweb'))
+# sys.path.append(APPS_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -44,6 +50,8 @@ INSTALLED_APPS = (
     'django_xmlrpc',
     'rest_framework',
     'serveurweb',
+    'serveurweb.user',
+    'serveurweb.core',
     'serveurXMLRPC',
     'serveurREST',
 )
@@ -129,5 +137,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # wsgi scheme
 os.environ['wsgi.url_scheme'] = 'http'
 
-LOGIN_URL = '/serveurweb/connexion/'
-LOGIN_REDIRECT_URL = '/serveurweb/articles/'
+LOGIN_URL = '/user/connexion/'
+LOGIN_REDIRECT_URL = '/serveurweb/'

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -
 
 from rest_framework import serializers
-from serveurweb.models import Articles
+from serveurweb.core.models import Articles
 
 
 class ArticlesSerializer(serializers.HyperlinkedModelSerializer):
