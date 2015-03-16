@@ -5,13 +5,13 @@ from django.shortcuts import render, get_object_or_404
 from django.http.response import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
-from django.forms.models import ModelForm
 
 from serveurweb.core.models import Articles
 from serveurweb.core.models import Familles
 from django.core import serializers
 import json
 from serveurweb.core.mixins import JSONResponseMixin
+from serveurweb.core.forms import form_article
 
 
    
@@ -41,10 +41,7 @@ class articles(JSONResponseMixin, generic.ListView):
         else:
             return super(articles, self).render_to_response(context)
 
-class form_article(ModelForm):
-    class Meta:
-        model = Articles
-        
+    
 class AjoutArticle(JSONResponseMixin, generic.CreateView):
     model = Articles
     success_url = reverse_lazy('articles_list')
@@ -63,6 +60,7 @@ class ModifArticle(JSONResponseMixin, generic.UpdateView):
     
     model = Articles
     success_url = reverse_lazy('articles_list')
+    fields = '__all__' # evite le warning RemovedInDjango18Warning: Using ModelFormMixin (base class of ModifArticle) without the 'fields' attribute is deprecated.
 
     def put(self, *args, **kwargs):
         if self.request.META.get('HTTP_ACCEPT') == 'application/json':
@@ -135,11 +133,6 @@ def ajouter_article(request):
 #####################################################################################################################
 # Familles
 #####################################################################################################################
-
-class form_famille(ModelForm):
-    class Meta:
-        model = Familles
-    
 class familles(generic.ListView):
         def get_queryset(self):
             return Familles.objects.order_by('id')

@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import socket
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -50,8 +49,8 @@ INSTALLED_APPS = (
     'django_xmlrpc',
     'rest_framework',
     'serveurweb',
-    'serveurweb.user',
-    'serveurweb.core',
+    'serveurweb.user', #pour avoir le path au html user/templates/user
+    'serveurweb.core', #pour avoir le path au html core/templates/core
     'serveurXMLRPC',
     'serveurREST',
 )
@@ -137,5 +136,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # wsgi scheme
 os.environ['wsgi.url_scheme'] = 'http'
 
-LOGIN_URL = '/user/connexion/'
+LOGIN_URL = '/serveurweb/user/connexion/'
 LOGIN_REDIRECT_URL = '/serveurweb/'

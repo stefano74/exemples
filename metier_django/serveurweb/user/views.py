@@ -13,7 +13,7 @@ from django.shortcuts import render
 @csrf_exempt
 def connexion(request):
     """
-    Connexion d'un utilisateur
+        Connexion d'un utilisateur
     """
     if request.method == "POST":
         if request.META.get('HTTP_ACCEPT') == 'application/json':
@@ -52,8 +52,8 @@ def connexion(request):
 
 def deconnexion(request):
     """
-    deconnexion
-    utiliser commande manage.py clearsessions pour supprimer les sessions expirées (2 semaines) de la DB 
+        deconnexion
+        utiliser commande manage.py clearsessions pour supprimer les sessions expirées (2 semaines) de la DB 
     """
     logout(request)
     if request.META.get('HTTP_ACCEPT') == 'application/json':
