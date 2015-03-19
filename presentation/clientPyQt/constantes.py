@@ -32,6 +32,3 @@ Adresses des applications DJANGO
 ADR_XMLRPC  = '/serveurXMLRPC/'
 ADR_REST    = '/serveurREST/'
 ADR_WEB     = '/serveurweb/'
-
-def fonctionNull():
-    pass
