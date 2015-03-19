@@ -13,7 +13,6 @@ import json
 from serveurweb.core.mixins import JSONResponseMixin
 from serveurweb.core.forms import form_article
 
-
    
 #####################################################################################################################
 # Page racine

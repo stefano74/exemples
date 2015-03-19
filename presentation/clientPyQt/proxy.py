@@ -5,6 +5,10 @@
 import xmlrpc.client
 import json
 import requests
+from clientPyQt import constantes
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Proxy:
     """
@@ -44,37 +48,54 @@ class ProxyXMLRPC(Proxy):
     Classe Proxy XMLRPC
     """
 
-    ADR_XMLRPC  = '/serveurXMLRPC/'
-
     def __init__(self, aConnection=None):
-        super(ProxyXMLRPC, self).__init__(aConnection, self.ADR_XMLRPC)
+        super(ProxyXMLRPC, self).__init__(aConnection, constantes.ADR_XMLRPC)
          
         try:
             self.__proxy = xmlrpc.client.ServerProxy(self._url, verbose=True, allow_none=True) 
-        except Exception:
+        except Exception as e:
+            logger.exception(e)
             raise Exception("le client XMLRPC n'est pas initialisé !")
-        #Proxy.__init__(self, aConnection)
-#         xmlrpc.client.ServerProxy.__init__(self, aConnection, verbose=True)
     
     def afficherMainWindow(self):
+        try:
+            return self.__proxy.afficherMainWindow()
+
+        except Exception as e:
+            logger.exception(e)
+            raise e
         
-        return self.__proxy.afficherMainWindow()
     
     def listerArticles(self):
-
-        return self.__proxy.listerArticles()
+        try:
+            return self.__proxy.listerArticles()
+    
+        except Exception as e:
+            logger.exception(e)
+            raise e
     
     def modifierArticle(self, aid, alibelle, aprix, adate):
+        try:
+            self.__proxy.modifierArticle(aid, alibelle, aprix, adate)
         
-        self.__proxy.modifierArticle(aid, alibelle, aprix, adate)
-        
+        except Exception as e:
+            logger.exception(e)
+            raise e
+
     def supprimerArticle(self, aid):
-        
-        self.__proxy.supprimerArticle(aid)
+        try:
+            self.__proxy.supprimerArticle(aid)
+
+        except Exception as e:
+            logger.exception(e)
+            raise e
     
     def ajouterArticle(self, alibelle, aprix, adate):
-        
-        self.__proxy.ajouterArticle(alibelle, aprix, adate)
+        try:
+            self.__proxy.ajouterArticle(alibelle, aprix, adate)
+        except Exception as e:
+            logger.exception(e)
+            raise e
         
 
 class ProxyREST(Proxy):
@@ -82,10 +103,8 @@ class ProxyREST(Proxy):
     Classe Proxy pour serveurREST
     """
 
-    ADR_REST = '/serveurREST/'
-
     def __init__(self, aConnection=None):
-        super(ProxyREST, self).__init__(aConnection, self.ADR_REST)
+        super(ProxyREST, self).__init__(aConnection, constantes.ADR_REST)
         
         self.__headers = {'content-type': 'application/json', 'accept': 'application/json'}
         
@@ -152,13 +171,11 @@ class ProxyREST(Proxy):
 
 class ProxyWeb(Proxy):
     """
-    Classe Proxy pour serveurweb
+        Classe Proxy pour serveurweb
     """
 
-    ADR_WEB = '/serveurweb/'
-
     def __init__(self, aConnection=None):
-        super(ProxyWeb, self).__init__(aConnection, self.ADR_WEB)
+        super(ProxyWeb, self).__init__(aConnection, constantes.ADR_WEB)
         
 
         self.__headers = {'content-type'    : 'application/json',
@@ -171,12 +188,12 @@ class ProxyWeb(Proxy):
         
         resp = requests.post(self._url + 'user/connexion/', data=json.dumps({'username': aUsername, 'password': aPassword}), headers=self.__headers)
 
-        print('resp.status_code = ', resp.status_code)
+        logger.debug('resp.status_code = %s', resp.status_code)
         
         if resp.status_code == 200:
             self.__cookies = dict(resp.cookies) # cookies contient sessionid et csrftoken
             self.__headers['X-CSRFToken'] = self.__cookies['csrftoken']
-            print('cookies = ', self.__cookies)
+            logger.debug('cookies = %s', self.__cookies)
             return True
         else:
             return False
@@ -189,7 +206,7 @@ class ProxyWeb(Proxy):
         resp = requests.post(url, headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
         
-        print('resp.status_code = ', resp.status_code)
+        logger.debug('resp.status_code = %s', resp.status_code)
         
         if resp.status_code == 200:
             self.__cookies = None
@@ -212,7 +229,7 @@ class ProxyWeb(Proxy):
 #         dicolist = resp.json() # a utiliser si le serveur envoie une liste de dict
         #ATTENTION : les 2 méthodes list de dict ou serializer n ont pas le meme format json
 
-        print('articles reçus = ', dicolist, type(dicolist))
+        logger.debug('articles reçus = %s', dicolist)
         
         result = []
         article = []
@@ -236,8 +253,8 @@ class ProxyWeb(Proxy):
         resp.raise_for_status()
                 
         #Dans le retour de la requête je renvoie l'article modifié
-        print('resp.status_code = ', resp.status_code)
-        print('article modifié = ', json.loads(resp.json()))
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug('article modifié = %s', json.loads(resp.json()))
         
     def supprimerArticle(self, aid):
         
@@ -247,8 +264,8 @@ class ProxyWeb(Proxy):
         resp = requests.delete(url, headers=self.__headers, cookies=self.__cookies)
         resp.raise_for_status()
 
-        print('resp.status_code = ', resp.status_code)
-        print("resp = ", json.loads(resp.json())) #réponse vide
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug("resp = %s", json.loads(resp.json())) #réponse vide
 
     
     def ajouterArticle(self, alibelle, aprix, adate):
@@ -261,5 +278,5 @@ class ProxyWeb(Proxy):
         resp.raise_for_status()
 
         #Dans le retour de la requête je renvoie l'article ajouté
-        print('resp.status_code = ', resp.status_code)
-        print('article ajouté = ', json.loads(resp.json()))
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug('article ajouté = %s', json.loads(resp.json()))

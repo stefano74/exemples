@@ -13,11 +13,16 @@ from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 import string
 from random import sample
 import random
-from xmlrpc.client import ProtocolError
 from _datetime import datetime
-from proxy import ProxyXMLRPC, ProxyREST, ProxyWeb
 from _ast import Delete
 
+from clientPyQt import constantes
+import logging
+from clientPyQt import log
+from clientPyQt.proxy import ProxyXMLRPC, ProxyREST, ProxyWeb
+
+log.configure()
+logger = logging.getLogger(__name__)
 
 #################################################################################
 #Description:
@@ -81,8 +86,8 @@ class FormArticle(QWidget):
             self.setLayout(self.mainLayout)
             self.setWindowTitle('Article')
 
-        except:
-            print ('FormArticle.__init__ Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
 
     #############################################################################
     # Envoi un signal "Ajouter Un article" à MainWindow
@@ -92,8 +97,8 @@ class FormArticle(QWidget):
             self._signal_closed.emit(self.edtLib.text(), self.edtPri.text(), self.edtDat.text())
             self.close()
 
-        except:
-            print ('FormArticle.AjouterArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
         
     #############################################################################
     # Fermeture ArtForm sans envoi de signal
@@ -121,15 +126,6 @@ class FormArticle(QWidget):
 #################################################################################
 class MainWindow(QWidget):
     
-    MODE_ADD = 'add'
-    MODE_MOD = 'mod'
-    
-    PROXY_XMLRPC    = 'Proxy XML-RPC'
-    PROXY_REST      = 'Proxy REST'
-    PROXY_WEB       = 'Proxy WEB'
-    PROXY_USER      = 'guest'
-    PROXY_PWD       = 'guest'
-
     _mode = ''
 
     _ArtForm_closed = pyqtSignal(['QString', 'QString', 'QString'], name = "ArtFormFermeture")
@@ -142,7 +138,7 @@ class MainWindow(QWidget):
 
             #connection serveur d'application
             self.__proxy = ProxyWeb(self.__adr_serveur)
-            if not self.__proxy.connecter(self.PROXY_USER, self.PROXY_PWD):
+            if not self.__proxy.connecter(constantes.PROXY_USER, constantes.PROXY_PWD):
                 raise Exception("Erreur connection proxy")
                         
             #demande la conf d'affichage
@@ -178,10 +174,10 @@ class MainWindow(QWidget):
 
                 self.cmbProxy = QComboBox()
                 self.cmbProxy.setMaximumSize(200, 30)
-                self.cmbProxy.addItem(self.PROXY_XMLRPC)
-                self.cmbProxy.addItem(self.PROXY_REST)
-                self.cmbProxy.addItem(self.PROXY_WEB)
-                self.cmbProxy.setCurrentText(self.PROXY_WEB)
+                self.cmbProxy.addItem(constantes.PROXY_XMLRPC)
+                self.cmbProxy.addItem(constantes.PROXY_REST)
+                self.cmbProxy.addItem(constantes.PROXY_WEB)
+                self.cmbProxy.setCurrentText(constantes.PROXY_WEB)
 
                 mainLayout = QGridLayout()
                 mainLayout.addWidget(self.cmbProxy, 0, 1)
@@ -212,18 +208,8 @@ class MainWindow(QWidget):
                 self.cmbProxy.currentIndexChanged.connect(self.changerProxy)
                 self._ArtForm_closed.connect(self.slot_FormArticle_closed)
 
-    
-        except ProtocolError as err:
-            print ('MainWindow.__init__ Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
-            print ("A protocol error occurred")
-            print ("URL: %s" % err.url)
-            print ("HTTP/HTTPS headers: %s" % err.headers)
-            print ("Error code: %d" % err.errcode)
-            print ("Error message: %s" % err.errmsg)
-        
-        except Exception:
-            print (self.__proxy)
-            print ('MainWindow.__init__ Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
             
     #############################################################################
     # Affiche tous les articles dans QTableWidget
@@ -246,8 +232,8 @@ class MainWindow(QWidget):
                 self.tableWidget.setItem(i, 3, QTableWidgetItem(str(art[3])))
                 i = i + 1
         
-        except:
-            print ('MainWindow.afficherArticles Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
             
     #############################################################################
     # Afficher FormArticle
@@ -258,8 +244,8 @@ class MainWindow(QWidget):
             self._ArtForm.setWindowModality(QtCore.Qt.ApplicationModal)
             self._ArtForm.show()
             
-        except:
-            print ('MainWindow.AfficherUnArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
 
 
     #############################################################################
@@ -270,8 +256,8 @@ class MainWindow(QWidget):
             self._mode = self.MODE_ADD
             self.AfficherFormulaire()
 
-        except:
-            print ('MainWindow.ajouterArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
 
     #############################################################################
     # Supprimer un article
@@ -281,8 +267,9 @@ class MainWindow(QWidget):
             if self.tableWidget.selectedItems():
                 self.__proxy.supprimerArticle(self.tableWidget.selectedItems()[0].text())
                 self.afficherArticles()
-        except:
-            print ('MainWindow.SupprimerArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+
+        except Exception as e:
+            logger.exception(e)
     
     #############################################################################
     # Modifier un article
@@ -294,8 +281,9 @@ class MainWindow(QWidget):
                 self.AfficherFormulaire(self.tableWidget.selectedItems()[1].text(), 
                                         float(self.tableWidget.selectedItems()[2].text()),
                                         datetime.strptime(self.tableWidget.selectedItems()[3].text(), '%Y-%M-%d').date())                
-        except:
-            print ('MainWindow.ModifierArticle Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+
+        except Exception as e:
+            logger.exception(e)
             
     #############################################################################
     # Slot fermeture FormArticle
@@ -307,13 +295,13 @@ class MainWindow(QWidget):
             elif self._mode == self.MODE_MOD:
                 self.__proxy.modifierArticle(int(self.tableWidget.selectedItems()[0].text()), alibelle, aprix, adate)
             else:
-                print('MainWindow.slot_FormArticle_closed : mode inconnu')
+                logger.error("Mode inconnu")
 
             self.afficherArticles()
             self._mode = ''
             
-        except:
-            print ('MainWindow.slot_FormArticle_closed Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
 
     #############################################################################
     # remplit table article
@@ -328,9 +316,10 @@ class MainWindow(QWidget):
                 prix = random.uniform(1, 100)
                 self.__proxy.ajouterArticle(libelle, prix)
                 if i%500 == 0:
-                    print('RemplirArticles')
-        except:
-            print ('MainWindow.RemplirArticles Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+                    logger.debug('RemplirArticles')
+
+        except Exception as e:
+            logger.exception(e)
             
     #############################################################################
     # COMMIT
@@ -338,8 +327,9 @@ class MainWindow(QWidget):
     def CommitSession(self):
         try:
             self.__proxy.commitSession()
-        except:
-            print ('MainWindow.CommitSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+
+        except Exception as e:
+            logger.exception(e)
             
     #############################################################################
     # ROLLBACK
@@ -347,8 +337,9 @@ class MainWindow(QWidget):
     def RollbackSession(self):
         try:
             self.__proxy.rollbackSession()
-        except:
-            print ('MainWindow.RollbackSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+
+        except Exception as e:
+            logger.exception(e)
 
     #############################################################################
     # Ferme fenêtre principale
@@ -358,8 +349,8 @@ class MainWindow(QWidget):
             if type(self.__proxy) == ProxyWeb:
                 self.__proxy.deconnecter()
             self.close()
-        except:
-            print ('MainWindow.RollbackSession Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+        except Exception as e:
+            logger.exception(e)
 
     #############################################################################
     # Imprimer
@@ -389,25 +380,26 @@ class MainWindow(QWidget):
                     self.__proxy.deconnecter()
                 Delete(self.__proxy)
             
-            if self.cmbProxy.currentText() == self.PROXY_XMLRPC:
+            if self.cmbProxy.currentText() == constantes.PROXY_XMLRPC:
                 self.__proxy = ProxyXMLRPC(self.__adr_serveur)
-            elif self.cmbProxy.currentText() == self.PROXY_REST:
+            elif self.cmbProxy.currentText() == constantes.PROXY_REST:
                 self.__proxy = ProxyREST(self.__adr_serveur)
-            elif self.cmbProxy.currentText() == self.PROXY_WEB:
+            elif self.cmbProxy.currentText() == constantes.PROXY_WEB:
                 self.__proxy = ProxyWeb(self.__adr_serveur)
-                if not self.__proxy.connecter(self.PROXY_USER, self.PROXY_PWD):
+                if not self.__proxy.connecter(constantes.PROXY_USER, constantes.PROXY_PWD):
                     raise Exception("Erreur connection proxy")
             else:
                 self.cmbProxy.currentIndexChanged.disconnect()
-                self.cmbProxy.setCurrentText(self.PROXY_XMLRPC)
+                self.cmbProxy.setCurrentText(constantes.PROXY_XMLRPC)
                 self.__proxy = ProxyXMLRPC(self.__adr_serveur)
                 self.cmbProxy.currentIndexChanged.connect(self.changerProxy)
 
                 raise Exception("Le proxy n'est pas défini")
             
             self.afficherArticles()
-        except:
-            print ('MainWindow.changerProxy Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
+
+        except Exception as e:
+            logger.exception(e)
             
                     
 #################################################################################
@@ -415,7 +407,7 @@ class MainWindow(QWidget):
 #################################################################################
 if __name__ == "__main__":
     
-    print('clientPyQt Main')
+    logger.debug('clientPyQt Main')
 
     vConnection = sys.argv[1]
 
