@@ -130,6 +130,7 @@ class MainWindow(QWidget):
             self.listLayout.removeWidget(self.__listwindow)
             self.__listwindow.close()
             del self.__listwindow
+            self.__listwindow = None
         
     def connecter(self):
         """
@@ -160,7 +161,8 @@ class MainWindow(QWidget):
                     raise Exception("Erreur deconnection Proxy")
             
                 del self.__proxy # verifier si del remet à None 
-            
+                self.__proxy = None
+                
         except Exception as e:
             logger.exception(e)
             
