@@ -19,7 +19,22 @@ class Proxy:
         self._serveur = aConnection # protected : simple '_'
         self._url = aConnection + aApplication # protected : simple '_'
 
-        
+    def connecter(self, aUsername, aPassword):
+        """
+        connecter au serveur
+        :param aUsername: login utilisateur
+        :type aUsername: string 
+        :param aPassword: mot de passe utilisateur
+        :type aPassword: string 
+        """
+        return True # retourne tjs vrai si pas de gestion des utilisateurs
+    
+    def deconnecter(self):
+        """
+        deconnecter du serveur
+        """
+        return True # retourne tjs vrai si pas de gestion des utilisateurs
+
     def afficherMainWindow(self):
         """
         permet de demander l'affichage la MainWindow

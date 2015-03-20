@@ -26,6 +26,7 @@ Utilisateur / Mot de passe
 PROXY_USER      = 'guest'
 PROXY_PWD       = 'guest'
 
+PROXY_URL   = 'http://localhost:8000'
 """
 Adresses des applications DJANGO 
 """
