@@ -21,27 +21,18 @@ import logging
 from clientPyQt import log
 from clientPyQt.proxy import ProxyXMLRPC, ProxyREST, ProxyWeb
 
+"""
+    Ce module est le point d'entrée du programme
+"""
+
 log.configure()
 logger = logging.getLogger(__name__)
 
-#################################################################################
-#Description:
-#   Formulaire d un article
-#
-#Entree:
-#
-#Sortie:
-#
-#Date:
-#   05/12/2014
-#
-#Appels:
-#
-#
-#Modifications:
-#
-#################################################################################
 class FormArticle(QWidget):
+    """
+        fenêtre d'édition d'un article
+        utilisé pour ajouter/modifier un article
+    """
     
     _signal_closed = pyqtSignal()
 
@@ -125,6 +116,11 @@ class FormArticle(QWidget):
 #
 #################################################################################
 class MainWindow(QWidget):
+    """
+        fenêtre principale
+        permet de lister les articles
+        CRUD Articles
+    """
     
     _mode = ''
 

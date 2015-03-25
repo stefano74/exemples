@@ -1,20 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-Created on 18 mars 2015
+    Created on 18 mars 2015
 
-@author: stefano
+    @author: stefano
+
+    Module de configuration des logs
+
+    :Example:
+
+    logger = logging.getLogger(__name__)
+    
+    logger.debug('trace de debug')
 '''
+
 import logging
 from clientPyQt import constantes
 
 from logging.config import dictConfig
 
-"""
-Module de configuration des logs
-Usage : logger = logging.getLogger(__name__)
-        logger.debug('trace de debug')
-"""
 
 dict_log = {
     'version': 1,
