@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: clientPyQt 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-26 15:14+0100\n"
+"PO-Revision-Date: 2015-03-26 16:04+0100\n"
+"Last-Translator: \n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: en_GB\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: main.py:47 /home/stefano/git/presentation/clientPyQt/main.py:53
+msgid "libellé"
+msgstr "wording"
+
+#: main.py:48 /home/stefano/git/presentation/clientPyQt/main.py:54
+msgid "prix"
+msgstr "price"
+
+#: main.py:49 /home/stefano/git/presentation/clientPyQt/main.py:55
+msgid "date"
+msgstr "date"
+
+#: main.py:59 /home/stefano/git/presentation/clientPyQt/main.py:65
+msgid "Annuler"
+msgstr "Cancel"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:157
+msgid "Ajouter"
+msgstr "Add"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:158
+msgid "Modifier"
+msgstr "Modify"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:159
+msgid "Supprimer"
+msgstr "Delete"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:160
+msgid "Raffraichir"
+msgstr "Refresh"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:161
+msgid "Generate"
+msgstr "Generate"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:162
+msgid "Commit"
+msgstr "Commit"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:163
+msgid "RollBack"
+msgstr "Rollback"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:164
+msgid "Quitter"
+msgstr "Quit"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:165
+msgid "Imprimer"
+msgstr "Print"
+
+#: /home/stefano/git/presentation/clientPyQt/main.py:227
+msgid "Id;Libellé;Prix;Date"
+msgstr "Id;wording;Price;Date"
+
+#: /home/stefano/git/presentation/clientPyQt/proxy.py:328
+#, python-format
+msgid "resp.status_code = %s"
+msgstr "resp.status_code = %s"
+
+#: /home/stefano/git/presentation/clientPyQt/proxy.py:329
+#, python-format
+msgid "article ajouté = %s"
+msgstr "added article = %s"

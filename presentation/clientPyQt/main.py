@@ -15,18 +15,20 @@ from random import sample
 import random
 from _datetime import datetime
 from _ast import Delete
+import logging
 
 from clientPyQt import constantes
-import logging
-from clientPyQt import log
 from clientPyQt.proxy import ProxyXMLRPC, ProxyREST, ProxyWeb
+from clientPyQt import log
+
+# configuration log
+log.configure()
+logger = logging.getLogger(__name__)
+
 
 """
     Ce module est le point d'entrée du programme
 """
-
-log.configure()
-logger = logging.getLogger(__name__)
 
 class FormArticle(QWidget):
     """
@@ -44,9 +46,9 @@ class FormArticle(QWidget):
             self._prix = aPrix
             self._date = aDate
             
-            self.lblLib = QLabel('libellé')
-            self.lblpri = QLabel('prix')
-            self.lbldat = QLabel('date')
+            self.lblLib = QLabel(_('libellé'))
+            self.lblpri = QLabel(_('prix'))
+            self.lbldat = QLabel(_('date'))
             self.edtLib = QLineEdit()
             self.edtPri = QLineEdit()
             self.edtDat = QDateEdit()
@@ -56,7 +58,7 @@ class FormArticle(QWidget):
             self.edtDat.setDate(aDate)
             
             self.btnOk = QPushButton('OK')
-            self.btnCancel = QPushButton('Annuler')  
+            self.btnCancel = QPushButton(_('Annuler'))  
             self.btnOk.setMaximumSize(100, 30)  
             self.btnCancel.setMaximumSize(100, 30)
 
@@ -148,15 +150,15 @@ class MainWindow(QWidget):
                 #alimentation de QTableView
                 self.afficherArticles()
                     
-                btnAdd = QPushButton('Ajouter')
-                btnMod = QPushButton('Modifier')
-                btnSup = QPushButton('Supprimer')
-                btnRef = QPushButton('Raffraichir')
-                btnGen = QPushButton('Generate')
-                btnCom = QPushButton('Commit')
-                btnRol = QPushButton('RollBack')
-                btnQui = QPushButton('Quitter')
-                btnImp = QPushButton('Imprimer')
+                btnAdd = QPushButton(_('Ajouter'))
+                btnMod = QPushButton(_('Modifier'))
+                btnSup = QPushButton(_('Supprimer'))
+                btnRef = QPushButton(_('Raffraichir'))
+                btnGen = QPushButton(_('Generate'))
+                btnCom = QPushButton(_('Commit'))
+                btnRol = QPushButton(_('RollBack'))
+                btnQui = QPushButton(_('Quitter'))
+                btnImp = QPushButton(_('Imprimer'))
                 
                 btnAdd.setMaximumSize(100, 30)
                 btnMod.setMaximumSize(100, 30)
@@ -218,7 +220,7 @@ class MainWindow(QWidget):
                 
             self.tableWidget.setRowCount(len(lstArt))
             self.tableWidget.setColumnCount(4)
-            self.tableWidget.setHorizontalHeaderLabels(('Id;Libellé;Prix;Date').split(';'))
+            self.tableWidget.setHorizontalHeaderLabels(_('Id;Libellé;Prix;Date').split(';'))
 
                                         
             for art in lstArt:
@@ -249,7 +251,7 @@ class MainWindow(QWidget):
     #############################################################################
     def AjouterArticle(self):
         try:
-            self._mode = self.MODE_ADD
+            self._mode = constantes.MODE_ADD
             self.AfficherFormulaire()
 
         except Exception as e:
@@ -272,7 +274,7 @@ class MainWindow(QWidget):
     #############################################################################
     def ModifierArticle(self):
         try:
-            self._mode = self.MODE_MOD
+            self._mode = constantes.MODE_MOD
             if self.tableWidget.selectedItems():
                 self.AfficherFormulaire(self.tableWidget.selectedItems()[1].text(), 
                                         float(self.tableWidget.selectedItems()[2].text()),
@@ -286,9 +288,9 @@ class MainWindow(QWidget):
     #############################################################################
     def slot_FormArticle_closed(self, alibelle, aprix, adate):
         try:
-            if self._mode == self.MODE_ADD:
+            if self._mode == constantes.MODE_ADD:
                 self.__proxy.ajouterArticle(alibelle, aprix, adate)
-            elif self._mode == self.MODE_MOD:
+            elif self._mode == constantes.MODE_MOD:
                 self.__proxy.modifierArticle(int(self.tableWidget.selectedItems()[0].text()), alibelle, aprix, adate)
             else:
                 logger.error("Mode inconnu")

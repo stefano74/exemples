@@ -325,5 +325,5 @@ class ProxyWeb(Proxy):
         resp.raise_for_status()
 
         #Dans le retour de la requête je renvoie l'article ajouté
-        logger.debug('resp.status_code = %s', resp.status_code)
-        logger.debug('article ajouté = %s', json.loads(resp.json()))
+        logger.debug(_('resp.status_code = %s'), resp.status_code)
+        logger.debug(_('article ajouté = %s'), json.loads(resp.json()))
