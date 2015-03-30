@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Module principale &mdash; Client Test PyQt5 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Client Test PyQt5 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="1.1. Proxy" href="proxy.html" />
+    <link rel="prev" title="Welcome to Client Test PyQt5’s documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="proxy.html" title="1.1. Proxy"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Client Test PyQt5’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Client Test PyQt5 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-main">
+<span id="module-principale"></span><h1>1. Module principale<a class="headerlink" href="#module-main" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="main.FormArticle">
+<em class="property">class </em><code class="descclassname">main.</code><code class="descname">FormArticle</code><span class="sig-paren">(</span><em>parent=None</em>, <em>aSignal=None</em>, <em>aLibelle=''</em>, <em>aPrix=0</em>, <em>aDate=&lt;built-in method today of type object at 0x97f780&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#main.FormArticle" title="Permalink to this definition">¶</a></dt>
+<dd><p>fenêtre d&#8217;édition d&#8217;un article
+utilisé pour ajouter/modifier un article</p>
+<dl class="method">
+<dt id="main.FormArticle.AjouterArticle">
+<code class="descname">AjouterArticle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.FormArticle.AjouterArticle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.FormArticle.Annuler">
+<code class="descname">Annuler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.FormArticle.Annuler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="main.MainWindow">
+<em class="property">class </em><code class="descclassname">main.</code><code class="descname">MainWindow</code><span class="sig-paren">(</span><em>parent=None</em>, <em>aConnection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>fenêtre principale
+permet de lister les articles
+CRUD Articles</p>
+<dl class="method">
+<dt id="main.MainWindow.AfficherFormulaire">
+<code class="descname">AfficherFormulaire</code><span class="sig-paren">(</span><em>aLibelle=''</em>, <em>aPrix=0</em>, <em>aDate=datetime.date(2015</em>, <em>3</em>, <em>27)</em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.AfficherFormulaire" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.AjouterArticle">
+<code class="descname">AjouterArticle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.AjouterArticle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.CommitSession">
+<code class="descname">CommitSession</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.CommitSession" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.ModifierArticle">
+<code class="descname">ModifierArticle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ModifierArticle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.RemplirArticles">
+<code class="descname">RemplirArticles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.RemplirArticles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.RollbackSession">
+<code class="descname">RollbackSession</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.RollbackSession" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.SupprimerArticle">
+<code class="descname">SupprimerArticle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.SupprimerArticle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.afficherArticles">
+<code class="descname">afficherArticles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.afficherArticles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.changerProxy">
+<code class="descname">changerProxy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.changerProxy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.fermerAppli">
+<code class="descname">fermerAppli</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.fermerAppli" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.imprimer">
+<code class="descname">imprimer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.imprimer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="main.MainWindow.slot_FormArticle_closed">
+<code class="descname">slot_FormArticle_closed</code><span class="sig-paren">(</span><em>alibelle</em>, <em>aprix</em>, <em>adate</em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.slot_FormArticle_closed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="main.logger">
+<code class="descclassname">main.</code><code class="descname">logger</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#main.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ce module est le point d&#8217;entrée du programme</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="proxy.html">1.1. Proxy</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Client Test PyQt5&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="proxy.html"
+                        title="next chapter">1.1. Proxy</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/main.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Stefano.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/main.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

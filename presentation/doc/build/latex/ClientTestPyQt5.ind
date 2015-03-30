@@ -1,0 +1,73 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item ADR\_REST (dans le module constantes), \hyperpage{5}
+  \item ADR\_WEB (dans le module constantes), \hyperpage{5}
+  \item ADR\_XMLRPC (dans le module constantes), \hyperpage{5}
+  \item afficherArticles() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item AfficherFormulaire() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item afficherMainWindow() (m\IeC {\'e}thode proxy.Proxy), \hyperpage{3}
+  \item AjouterArticle() (m\IeC {\'e}thode main.FormArticle), \hyperpage{3}
+  \item AjouterArticle() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item ajouterArticle() (m\IeC {\'e}thode proxy.Proxy), \hyperpage{3}
+  \item Annuler() (m\IeC {\'e}thode main.FormArticle), \hyperpage{3}
+
+  \indexspace
+  \bigletter C
+  \item changerProxy() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item CommitSession() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item configure() (dans le module log), \hyperpage{7}
+  \item constantes (module), \hyperpage{5}
+
+  \indexspace
+  \bigletter D
+  \item DEBUG (dans le module constantes), \hyperpage{5}
+
+  \indexspace
+  \bigletter F
+  \item fermerAppli() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item FormArticle (classe dans main), \hyperpage{3}
+
+  \indexspace
+  \bigletter I
+  \item imprimer() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+
+  \indexspace
+  \bigletter L
+  \item listerArticles() (m\IeC {\'e}thode proxy.Proxy), \hyperpage{4}
+  \item log (module), \hyperpage{7}
+
+  \indexspace
+  \bigletter M
+  \item main (module), \hyperpage{3}
+  \item MainWindow (classe dans main), \hyperpage{3}
+  \item MODE\_ADD (dans le module constantes), \hyperpage{5}
+  \item MODE\_MOD (dans le module constantes), \hyperpage{5}
+  \item ModifierArticle() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item modifierArticle() (m\IeC {\'e}thode proxy.Proxy), \hyperpage{4}
+
+  \indexspace
+  \bigletter P
+  \item Proxy (classe dans proxy), \hyperpage{3}
+  \item proxy (module), \hyperpage{3}
+  \item PROXY\_PWD (dans le module constantes), \hyperpage{5}
+  \item PROXY\_USER (dans le module constantes), \hyperpage{5}
+  \item ProxyREST (classe dans proxy), \hyperpage{4}
+  \item ProxyWeb (classe dans proxy), \hyperpage{4}
+  \item ProxyXMLRPC (classe dans proxy), \hyperpage{4}
+
+  \indexspace
+  \bigletter R
+  \item RemplirArticles() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item RequireDebugFalse (classe dans log), \hyperpage{7}
+  \item RequireDebugTrue (classe dans log), \hyperpage{7}
+  \item RollbackSession() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+
+  \indexspace
+  \bigletter S
+  \item slot\_FormArticle\_closed() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item SupprimerArticle() (m\IeC {\'e}thode main.MainWindow), \hyperpage{3}
+  \item supprimerArticle() (m\IeC {\'e}thode proxy.Proxy), \hyperpage{4}
+
+\end{theindex}

@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2015, Stefano
+# This file is distributed under the same license as the Client Test PyQt5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Client Test PyQt5 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-27 11:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/proxy.rst:8
+msgid "Proxy"
+msgstr ""
+
+#: ../../source/proxy.rst:10
+msgid "Ce module sert d'interface au serveur. Toutes les méthodes d'accès aux modèles dans la base de données sont décrites ci-après."
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy:1
+msgid "Created on 18 mars 2015"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy:3
+msgid "@author: stefano"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy:5
+msgid "Module de connexion au serveur par type de proxy"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy:1
+msgid "classe d'interface Proxy"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.afficherMainWindow:1
+msgid "Demande l'autorisation de l'affichage MainWindow"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.ajouterArticle:1
+msgid "Ajoute les champs d'un article"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.ajouterArticle:3
+msgid "id de l'article à ajouter"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.ajouterArticle:5
+msgid "libellé de l'article à ajouter"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.ajouterArticle:7
+msgid "prix de l'article à ajouter"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.ajouterArticle:9
+msgid "date de l'article à ajouter"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:1
+msgid "Demande la liste des articles"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:3
+msgid "liste des articles"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:6
+msgid "modifierArticle(), supprimerArticle(), ajouterArticle()"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:7
+msgid "retourne tous les articles au format JSON pour serveurweb"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:8
+msgid "serveurweb retourne le dictionaire des articles sérialisé au format Django"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:0
+msgid "À faire"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.listerArticles:9
+msgid "A implémenter dans les classe dérivant de Proxy"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.modifierArticle:1
+msgid "Modifie les champs d'un article"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.modifierArticle:3
+msgid "id de l'article à modifier"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.modifierArticle:5
+msgid "libellé de l'article à modifier"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.modifierArticle:7
+msgid "prix de l'article à modifier"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.modifierArticle:9
+msgid "date de l'article à modifier"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.supprimerArticle:1
+msgid "Supprime les champs d'un article"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.Proxy.supprimerArticle:3
+msgid "id de l'article à supprimer"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.ProxyREST:1
+msgid "Classe Proxy pour serveurREST"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.ProxyWeb:1
+msgid "Classe Proxy pour serveurweb"
+msgstr ""
+
+#: ../../../clientPyQt/proxy.py:docstring of proxy.ProxyXMLRPC:1
+msgid "Classe Proxy XMLRPC"
+msgstr ""
+
