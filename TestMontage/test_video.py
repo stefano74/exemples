@@ -32,7 +32,7 @@ class TestVideo:
 			#Arret du programme par saisie clavier
 			if KbHit.kbhit():
 				self.kbhit = KbHit.getch()
-				if (self.kbhit == 'o') or (self.kbhit == 'O'):
+				if (self.kbhit == chr(10)):
 					vResultat = True
 				#print 'Arret programme demande '
 				break
@@ -50,7 +50,7 @@ class TestVideo:
 			#Arret du programme par saisie clavier
 			if KbHit.kbhit():
 				self.kbhit = KbHit.getch()
-				if (self.kbhit == 'o') or (self.kbhit == 'O'):
+				if (self.kbhit == chr(10)):
 					vResultat = True
 				#print 'Arret programme demande '
 				break
@@ -60,7 +60,7 @@ class TestVideo:
 
 	def testBleu(self):
 		"""
-		Remplit l'écran en rouge
+		Remplit l'écran en bleu
 		"""	
 		vResultat = False	
 		while 1:
@@ -69,7 +69,46 @@ class TestVideo:
 			#Arret du programme par saisie clavier
 			if KbHit.kbhit():
 				self.kbhit = KbHit.getch()
-				if (self.kbhit == 'o') or (self.kbhit == 'O'):
+				if (self.kbhit == chr(10)):
+					vResultat = True
+				#print 'Arret programme demande '
+				break
+			
+#			time.sleep(1)
+		return vResultat
+
+
+	def testBlanc(self):
+		"""
+		Remplit l'écran en blanc
+		"""	
+		vResultat = False	
+		while 1:
+			sys.stdout.write("\033[0;37;47m 0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB \033[0m")
+
+			#Arret du programme par saisie clavier
+			if KbHit.kbhit():
+				self.kbhit = KbHit.getch()
+				if (self.kbhit == chr(10)):
+					vResultat = True
+				#print 'Arret programme demande '
+				break
+			
+#			time.sleep(1)
+		return vResultat
+
+	def testNoir(self):
+		"""
+		Remplit l'écran en noir
+		"""	
+		vResultat = False	
+		while 1:
+			sys.stdout.write("\033[0;30;40m 0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB0xDB \033[0m")
+
+			#Arret du programme par saisie clavier
+			if KbHit.kbhit():
+				self.kbhit = KbHit.getch()
+				if (self.kbhit == chr(10)):
 					vResultat = True
 				#print 'Arret programme demande '
 				break
@@ -79,11 +118,14 @@ class TestVideo:
 
 	def run(self):
 		"""
-		Teste les 3 couleurs
+		Teste les 3 couleurs RGB + Noir / Blanc
 		"""
 		vResultat = self.testRouge() and \
 					self.testVert() and \
-					self.testBleu()
+					self.testBleu() and \
+					self.testNoir() and \
+					self.testBlanc()
+					
 		
 		if vResultat:
 			msg = "\033[0;37;42m Test Video OK \033[0m"
