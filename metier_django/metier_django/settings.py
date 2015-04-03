@@ -210,7 +210,7 @@ LOGGING = {
                     'propagate': False,
                 },                
                 'django': {
-                    'handlers': ['console', 'development_logfile',],
+                    'handlers': ['console', 'development_logfile', 'production_logfile'],
                 },
                 'py.warnings': {
                     'handlers': ['console', 'development_logfile',],

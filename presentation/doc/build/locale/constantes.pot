@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2015, Stefano
+# This file is distributed under the same license as the Client Test PyQt5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Client Test PyQt5 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-27 11:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/constantes.rst:8
+msgid "Constantes"
+msgstr ""
+
+#: ../../source/constantes.rst:10
+msgid "Cette page représente la documentation des constantes."
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.ADR_REST:1
+msgid "URL du serveur REST"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.ADR_WEB:1
+msgid "URL du serveur web - serveur principale"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.ADR_XMLRPC:1
+msgid "URL du serveur XML-RPC"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.DEBUG:1
+msgid "Développement : DEBUG = True Production : DEBUG = False"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.MODE_ADD:1
+msgid "MODE Ajout d'un objet"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.MODE_MOD:1
+msgid "MODE Modification d'un objet"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.PROXY_PWD:1
+msgid "Mot de passe"
+msgstr ""
+
+#: ../../../clientPyQt/constantes.py:docstring of constantes.PROXY_USER:1
+msgid "Utilisateur"
+msgstr ""
+

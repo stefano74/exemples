@@ -1,5 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+'''
+Created on 18 mars 2015
+
+@author: stefano
+
+Module de connexion au serveur par type de proxy
+
+'''
 
 #import python
 import xmlrpc.client
@@ -12,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class Proxy:
     """
-    classe d'interface Proxy
+        classe d'interface Proxy
     """    
     def __init__(self, aConnection=None, aApplication=None):
         
@@ -37,8 +45,9 @@ class Proxy:
 
     def afficherMainWindow(self):
         """
-        permet de demander l'affichage la MainWindow
-        retourne boolean
+            Demande l'autorisation de l'affichage MainWindow
+            
+            :rtype: boolean
         """
         pass
     
@@ -82,23 +91,61 @@ class Proxy:
 
     def listerArticles(self):
         """
-        Retourne la liste des articles
+            Demande la liste des articles
+            
+            :return: liste des articles
+            :rtype: dict
+            
+            .. seealso:: modifierArticle(), supprimerArticle(), ajouterArticle()
+            .. warning:: retourne tous les articles au format JSON pour serveurweb
+            .. note:: serveurweb retourne le dictionaire des articles sérialisé au format Django
+            .. todo:: A implémenter dans les classe dérivant de Proxy         
         """
         pass
     
     def modifierArticle(self, aid, alibelle, aprix, adate):
+        """
+            Modifie les champs d'un article
+            
+            :param aid: id de l'article à modifier
+            :type aid: int
+            :param alibelle: libellé de l'article à modifier
+            :type alibelle: str
+            :param aprix: prix de l'article à modifier
+            :type aprix: str
+            :param adate: date de l'article à modifier
+            :type adate: str
+        """
         pass
     
-    def supprimerArticle(self, alibelle):
+    def supprimerArticle(self, aid):
+        """
+            Supprime les champs d'un article
+            
+            :param aid: id de l'article à supprimer
+            :type aid: int
+        """
         pass
     
     def ajouterArticle(self, alibelle, aprix, adate):
+        """
+            Ajoute les champs d'un article
+            
+            :param aid: id de l'article à ajouter
+            :type aid: int
+            :param alibelle: libellé de l'article à ajouter
+            :type alibelle: str
+            :param aprix: prix de l'article à ajouter
+            :type aprix: str
+            :param adate: date de l'article à ajouter
+            :type adate: str
+        """
         pass
     
 
 class ProxyXMLRPC(Proxy):
     """
-    Classe Proxy XMLRPC
+        Classe Proxy XMLRPC
     """
 
     def __init__(self, aConnection=None):
@@ -153,7 +200,7 @@ class ProxyXMLRPC(Proxy):
 
 class ProxyREST(Proxy):
     """
-    Classe Proxy pour serveurREST
+        Classe Proxy pour serveurREST
     """
 
     def __init__(self, aConnection=None):
@@ -331,8 +378,8 @@ class ProxyWeb(Proxy):
         resp.raise_for_status()
 
         #Dans le retour de la requête je renvoie l'article ajouté
-        logger.debug('resp.status_code = %s', resp.status_code)
-        logger.debug('article ajouté = %s', json.loads(resp.json()))
+        logger.debug(_('resp.status_code = %s'), resp.status_code)
+        logger.debug(_('article ajouté = %s'), json.loads(resp.json()))
 
     def listerModels(self):
         """

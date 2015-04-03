@@ -8,6 +8,7 @@ import logging
 from clientPyQt import log
 from clientPyQt.mainwindow import MainWindow
 
+# configuration log
 log.configure()
 logger = logging.getLogger(__name__)
 
