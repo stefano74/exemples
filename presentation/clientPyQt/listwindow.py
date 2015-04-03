@@ -148,8 +148,8 @@ class ListWindow(QWidget):
     def SupprimerArticle(self):
         try:
             if self.tableWidget.selectedItems():
-                self.__proxy.supprimerArticle(self.tableWidget.selectedItems()[0].text())
-                self.afficherArticles()
+                self.__proxy.supprimerArticle(self.__lstModel[self.tableWidget.currentRow()]['pk'])
+                self.afficherModel()
 
         except Exception as e:
             logger.exception(e)
