@@ -57,7 +57,14 @@ class Proxy:
         :return: liste des models du serveur
         :rtype: list of string
         """
-        pass
+        return {}
+    
+    def listerModel(self, aModelName):
+        """
+        récupère la liste d'objets du model
+        :return: liste de dictionnaire au format JSON Django serializer
+        :rtype: [{},]
+        """
     
     def ajouterModel(self, aModelName, adictModel):
         """
