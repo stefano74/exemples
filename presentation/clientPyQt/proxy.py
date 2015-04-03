@@ -42,6 +42,44 @@ class Proxy:
         """
         pass
     
+    def listerModels(self):
+        """
+        demande la liste des models du serveur
+        :return: liste des models du serveur
+        :rtype: list of string
+        """
+        pass
+    
+    def ajouterModel(self, aModelName, adictModel):
+        """
+        ajout un model 
+        :param aModelName: nom du model
+        :type aModelName: string
+        :param adictModel: le model à ajouter
+        :type adictModel: dictionnaire au format JSON sérialiser par Django serialize JSON
+        """
+        pass
+    
+    def modifierModel(self, aModelName, adictModel):
+        """
+        modifier un model 
+        :param aModelName: nom du model
+        :type aModelName: string
+        :param adictModel: le model à modifier
+        :type adictModel: dictionnaire au format Django serialize JSON
+        """
+        pass
+
+    def supprimerModel(self, aModelName, adictModel):
+        """
+        supprimer un model 
+        :param aModelName: nom du model
+        :type aModelName: string
+        :param adictModel: le model à supprimer
+        :type adictModel: dictionnaire au format Django serialize JSON
+        """
+        pass
+
     def listerArticles(self):
         """
         Retourne la liste des articles
@@ -295,3 +333,73 @@ class ProxyWeb(Proxy):
         #Dans le retour de la requête je renvoie l'article ajouté
         logger.debug('resp.status_code = %s', resp.status_code)
         logger.debug('article ajouté = %s', json.loads(resp.json()))
+
+    def listerModels(self):
+        """
+        demande la liste des models du serveur
+        :return: liste des models du serveur
+        :rtype: list of string
+        """
+        try:
+            resp = requests.get(self._url, headers=self.__headers, cookies=self.__cookies)
+            resp.raise_for_status()
+    
+            resp.encoding = 'utf-8'
+            lstModels = json.loads(resp.json())
+    
+            logger.debug('liste des models  = %s', lstModels)
+            
+            return lstModels
+
+        except Exception as e:
+            logger.exception(e)
+            raise e
+
+    def listerModel(self, aModelName):
+
+        url = self._url + aModelName + "/"
+        
+        resp = requests.get(url=url, headers=self.__headers, cookies=self.__cookies)
+        resp.raise_for_status()
+
+        resp.encoding = 'utf-8'
+        dicolist = json.loads(resp.json()) # a utiliser si le serveur renvoie le serializer json
+#         dicolist = resp.json() # a utiliser si le serveur envoie une liste de dict
+        #ATTENTION : les 2 méthodes list de dict ou serializer n ont pas le meme format json
+
+        logger.debug('articles reçus = %s', dicolist)
+        
+        return dicolist
+
+    def ajouterModel(self, aModelName, adictModel):
+        url = self._url + aModelName + "/add/"
+        self.__headers['Referer'] = url
+
+        resp = requests.post(url, data=json.dumps(adictModel), headers=self.__headers, cookies=self.__cookies)
+        resp.raise_for_status()
+
+        #Dans le retour de la requête je renvoie l'article ajouté
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug('article ajouté = %s', json.loads(resp.json()))
+    
+    def modifierModel(self, aModelName, adictModel):
+        url = self._url + aModelName + "/" + str(adictModel['pk']) + "/"
+        self.__headers['Referer'] = url
+
+        resp = requests.put(url, data=json.dumps(adictModel), headers=self.__headers, cookies=self.__cookies)
+        resp.raise_for_status()
+                
+        #Dans le retour de la requête je renvoie l'article modifié
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug('article modifié = %s', json.loads(resp.json()))
+
+    def supprimerModel(self, aModelName, adictModel):
+        url = self._url + aModelName + "/" + str(adictModel['pk']) + "/del/"
+        self.__headers['Referer'] = url
+        
+        resp = requests.delete(url, headers=self.__headers, cookies=self.__cookies)
+        resp.raise_for_status()
+
+        logger.debug('resp.status_code = %s', resp.status_code)
+        logger.debug("resp = %s", json.loads(resp.json())) #réponse vide
+        

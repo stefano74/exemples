@@ -31,7 +31,7 @@ class ListWindow(QWidget):
     
     _mode = ''
 
-    _ArtForm_closed = pyqtSignal(['QString', 'QString', 'QString'], name = "ArtFormFermeture")
+    _ArtForm_closed = pyqtSignal(['PyQt_PyObject'], name = "ArtFormFermeture")
     
     def __init__(self, parent=None, aproxy=None):
         super(ListWindow, self).__init__(parent)
@@ -52,6 +52,8 @@ class ListWindow(QWidget):
             btnRef = QPushButton('Raffraichir')
             btnGen = QPushButton('Generate')
             btnImp = QPushButton('Imprimer')
+
+            self.cmboListModels = QComboBox()
             
             btnAdd.setMaximumSize(100, 30)
             btnMod.setMaximumSize(100, 30)
@@ -61,6 +63,7 @@ class ListWindow(QWidget):
             btnImp.setMaximumSize(100, 30)
 
             mainLayout = QGridLayout()
+            mainLayout.addWidget(self.cmboListModels, 0, 1, 1, 4)
             mainLayout.addWidget(self.tableWidget, 1, 1, 1, 4)
             mainLayout.addWidget(btnAdd, 2, 1)
             mainLayout.addWidget(btnMod, 2, 2)
@@ -71,13 +74,17 @@ class ListWindow(QWidget):
                 
             self.setLayout(mainLayout)
 #             self.resize(500, 500)
-            btnAdd.clicked.connect(self.AjouterArticle)
-            btnMod.clicked.connect(self.ModifierArticle)
+            btnAdd.clicked.connect(self.AjouterModel)
+            btnMod.clicked.connect(self.ModifierModel)
             btnSup.clicked.connect(self.SupprimerArticle)
-            btnRef.clicked.connect(self.afficherArticles)
+            btnRef.clicked.connect(self.afficherModel)
             btnGen.clicked.connect(self.generer)
             btnImp.clicked.connect(self.imprimer)
             self._ArtForm_closed.connect(self.slot_FormArticle_closed)
+            
+            self.__listModels = self.__proxy.listerModels()
+            self.initCmboListModels()
+            self.afficherModel()
 
         except Exception as e:
             logger.exception(e)
@@ -85,22 +92,20 @@ class ListWindow(QWidget):
     #############################################################################
     # Affiche tous les articles dans QTableWidget
     #############################################################################
-    def afficherArticles(self):
+    def afficherModel(self):
         try:
             i = 0
-            lstArt = self.__proxy.listerArticles()
+            self.__lstModel = self.__proxy.listerModel(self.cmboListModels.currentText())
             self.tableWidget.clear()
                 
-            self.tableWidget.setRowCount(len(lstArt))
-            self.tableWidget.setColumnCount(4)
-            self.tableWidget.setHorizontalHeaderLabels(('Id;Libellé;Prix;Date').split(';'))
-
+            self.tableWidget.setRowCount(len(self.__lstModel))
+            header = list(self.__lstModel[0]['fields'].keys())
+            self.tableWidget.setColumnCount(len(header)) 
+            self.tableWidget.setHorizontalHeaderLabels(header)
                                         
-            for art in lstArt:
-                self.tableWidget.setItem(i, 0, QTableWidgetItem(str(art[0])))
-                self.tableWidget.setItem(i, 1, QTableWidgetItem(str(art[1])))
-                self.tableWidget.setItem(i, 2, QTableWidgetItem(str(art[2])))
-                self.tableWidget.setItem(i, 3, QTableWidgetItem(str(art[3])))
+            for model in self.__lstModel:
+                for col in range(len(header)):
+                    self.tableWidget.setItem(i, col, QTableWidgetItem(str(model['fields'][header[col]])))
                 i = i + 1
         
         except Exception as e:
@@ -109,9 +114,9 @@ class ListWindow(QWidget):
     #############################################################################
     # Afficher FormArticle
     #############################################################################
-    def AfficherFormulaire(self, aLibelle = '', aPrix = 0, aDate = date.today()):
+    def AfficherFormulaire(self, adictModel = None):
         try:
-            self._ArtForm = DetailWindow(None, self._ArtForm_closed, aLibelle, aPrix, aDate)
+            self._ArtForm = DetailWindow(None, self._ArtForm_closed, adictModel)
             self._ArtForm.setWindowModality(QtCore.Qt.ApplicationModal)
             self._ArtForm.show()
             
@@ -122,10 +127,19 @@ class ListWindow(QWidget):
     #############################################################################
     # Ajouter un article
     #############################################################################
-    def AjouterArticle(self):
+    def AjouterModel(self):
         try:
-            self._mode = self.MODE_ADD
-            self.AfficherFormulaire()
+            self._mode = constantes.MODE_ADD
+            
+            #création d'un dico par défaut vide
+            dictDefault = {}
+            dictDefault['fields'] = self.__lstModel[0]['fields']
+            
+            for k in dictDefault['fields'].keys():
+                dictDefault['fields'][k] = ""
+            
+            print ("dictdefault = ", dictDefault)
+            self.AfficherFormulaire(dictDefault)
 
         except Exception as e:
             logger.exception(e)
@@ -145,18 +159,16 @@ class ListWindow(QWidget):
     #############################################################################
     # Modifier un article
     #############################################################################
-    def ModifierArticle(self):
+    def ModifierModel(self):
         try:
-            self._mode = self.MODE_MOD
+            self._mode = constantes.MODE_MOD
             if self.tableWidget.selectedItems():
-                self.AfficherFormulaire(self.tableWidget.selectedItems()[1].text(), 
-                                        float(self.tableWidget.selectedItems()[2].text()),
-                                        datetime.strptime(self.tableWidget.selectedItems()[3].text(), '%Y-%M-%d').date())                
+                self.AfficherFormulaire(self.__lstModel[self.tableWidget.currentRow()])                
 
         except Exception as e:
             logger.exception(e)
             
-    def slot_FormArticle_closed(self, alibelle, aprix, adate):
+    def slot_FormArticle_closed(self, adictModel):
         """
             SLOT Fermeture fenetre DetailWindow
             :param alibelle: libelle de l'objet
@@ -164,14 +176,14 @@ class ListWindow(QWidget):
             :param adate: date de l'objet
         """
         try:
-            if self._mode == self.MODE_ADD:
-                self.__proxy.ajouterArticle(alibelle, aprix, adate)
-            elif self._mode == self.MODE_MOD:
-                self.__proxy.modifierArticle(int(self.tableWidget.selectedItems()[0].text()), alibelle, aprix, adate)
+            if self._mode == constantes.MODE_ADD:
+                self.__proxy.ajouterModel(self.cmboListModels.currentText(), adictModel)
+            elif self._mode == constantes.MODE_MOD:
+                self.__proxy.modifierModel(self.cmboListModels.currentText(), adictModel)
             else:
                 logger.error("Mode inconnu")
-
-            self.afficherArticles()
+ 
+            self.afficherModel()
             self._mode = ''
             
         except Exception as e:
@@ -210,4 +222,24 @@ class ListWindow(QWidget):
         # dialog.addEnabledOption(QAbstractPrintDialog.PrintSelection)
         if dialog.exec_() == True:
             doc.print(printer)
+
+    def listerModels(self):
+        try:
+            return self.__proxy.listerModels()
+        except Exception as e:
+            logger.exception(e)
             
+        
+    def initCmboListModels(self):
+        """
+        initialise la combobox avec la liste des models
+        """
+        try:
+            for model in self.__listModels:
+                self.cmboListModels.addItem(model['fields']['name'])
+            self.cmboListModels.setCurrentIndex(0)
+
+        except Exception as e:
+            logger.exception(e)
+
+        

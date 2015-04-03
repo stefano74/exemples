@@ -6,6 +6,6 @@
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 3.0</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">python3</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>/home/stefano/Téléchargements/PyQt-gpl-5.4.tar.gz</path>
+<path>/home/stefano/PyQt-gpl-5.2.1.tar.gz</path>
 </pydev_pathproperty>
 </pydev_project>

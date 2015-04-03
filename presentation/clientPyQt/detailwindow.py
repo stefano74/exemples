@@ -7,9 +7,9 @@ Created on 19 mars 2015
 @author: stefano
 '''
 from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, \
-    QLabel, QLineEdit, QDateEdit
+    QLabel, QLineEdit, QDateEdit, QFormLayout, QHBoxLayout, QVBoxLayout
 from PyQt5.QtCore import pyqtSignal
-    
+from PyQt5 import QtCore    
 
 import logging
 from _datetime import date
@@ -24,27 +24,14 @@ class DetailWindow(QWidget):
     
     _signal_closed = pyqtSignal()
 
-    def __init__(self, parent=None, aSignal = None, aLibelle = '', aPrix = 0, aDate = date.today):
+    def __init__(self, parent=None, aSignal = None, adictModel = None):
         """
             Constructeur class DetailWindow
         """
         super(DetailWindow, self).__init__(parent)
         
         try:
-            self._libelle = aLibelle
-            self._prix = aPrix
-            self._date = aDate
-            
-            self.lblLib = QLabel('libellé')
-            self.lblpri = QLabel('prix')
-            self.lbldat = QLabel('date')
-            self.edtLib = QLineEdit()
-            self.edtPri = QLineEdit()
-            self.edtDat = QDateEdit()
-            self.edtDat.setDisplayFormat('yyyy-MM-dd')
-            self.edtLib.setText(aLibelle)
-            self.edtPri.setText(str(aPrix))
-            self.edtDat.setDate(aDate)
+            self.__dictModel = adictModel
             
             self.btnOk = QPushButton('OK')
             self.btnCancel = QPushButton('Annuler')  
@@ -55,18 +42,23 @@ class DetailWindow(QWidget):
             self.btnOk.clicked.connect(self.AjouterArticle)  
             self.btnCancel.clicked.connect(self.Annuler)  
             
-            self.mainLayout = QGridLayout()
-            self.mainLayout.addWidget(self.lblLib, 0, 0)
-            self.mainLayout.addWidget(self.edtLib, 0, 1)
-            self.mainLayout.addWidget(self.lblpri, 1, 0)
-            self.mainLayout.addWidget(self.edtPri, 1, 1)
-            self.mainLayout.addWidget(self.lbldat, 2, 0)
-            self.mainLayout.addWidget(self.edtDat, 2, 1)
-            self.mainLayout.addWidget(self.btnOk, 3, 0)
-            self.mainLayout.addWidget(self.btnCancel, 3, 1)
+            btnLayout = QHBoxLayout()
+            btnLayout.addWidget(self.btnOk)
+            btnLayout.addWidget(self.btnCancel)
+            btnLayout.setAlignment(QtCore.Qt.AlignRight)
+
+            self.formLayout = QFormLayout()
+            for cle, valeur in adictModel['fields'].items():
+                lineEdit = QLineEdit(str(valeur))
+#                 lineEdit.setObjectName(cle)
+                self.formLayout.addRow(cle, lineEdit)
+            self.mainLayout = QVBoxLayout()
+            self.mainLayout.addLayout(self.formLayout)
+            self.mainLayout.addLayout(btnLayout)
+            
                         
             self.setLayout(self.mainLayout)
-            self.setWindowTitle('Article')
+            self.setWindowTitle('Detail')
 
         except Exception as e:
             logger.exception(e)
@@ -76,7 +68,14 @@ class DetailWindow(QWidget):
     #############################################################################
     def AjouterArticle(self):
         try:
-            self._signal_closed.emit(self.edtLib.text(), self.edtPri.text(), self.edtDat.text())
+            # mise à jour du dico avec le formulaire
+            for i in range(self.formLayout.count()):
+                if (i % 2) == 0:
+                    label = self.formLayout.itemAt(i).widget()
+                    lineedit = self.formLayout.itemAt(i+1).widget()
+                    self.__dictModel['fields'][label.text()] = lineedit.text()
+            
+            self._signal_closed.emit(self.__dictModel)
             self.close()
 
         except Exception as e:
