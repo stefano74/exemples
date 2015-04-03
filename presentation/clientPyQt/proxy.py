@@ -55,9 +55,14 @@ class Proxy:
         """
         demande la liste des models du serveur
         :return: liste des models du serveur
-        :rtype: list of string
+        :rtype: list of dict
         """
-        return {}
+        dictModels = {}
+        dictModels['fields'] = {'name': 'articles'}
+        listModels = []
+        listModels.append(dictModels)
+        
+        return listModels
     
     def listerModel(self, aModelName):
         """
@@ -65,6 +70,8 @@ class Proxy:
         :return: liste de dictionnaire au format JSON Django serializer
         :rtype: [{},]
         """
+    
+        return self.listerArticles()
     
     def ajouterModel(self, aModelName, adictModel):
         """
@@ -74,7 +81,10 @@ class Proxy:
         :param adictModel: le model à ajouter
         :type adictModel: dictionnaire au format JSON sérialiser par Django serialize JSON
         """
-        pass
+        
+        self.ajouterArticle(adictModel['fields']['libelle'],
+                            adictModel['fields']['prix'],
+                            adictModel['fields']['date'])
     
     def modifierModel(self, aModelName, adictModel):
         """
@@ -84,7 +94,10 @@ class Proxy:
         :param adictModel: le model à modifier
         :type adictModel: dictionnaire au format Django serialize JSON
         """
-        pass
+        self.modifierArticle(adictModel['pk'],
+                             adictModel['fields']['libelle'],
+                             adictModel['fields']['prix'],
+                             adictModel['fields']['date'])
 
     def supprimerModel(self, aModelName, adictModel):
         """
@@ -94,7 +107,7 @@ class Proxy:
         :param adictModel: le model à supprimer
         :type adictModel: dictionnaire au format Django serialize JSON
         """
-        pass
+        self.supprimerArticle(adictModel['pk'])
 
     def listerArticles(self):
         """
@@ -175,7 +188,12 @@ class ProxyXMLRPC(Proxy):
     
     def listerArticles(self):
         try:
-            return self.__proxy.listerArticles()
+            resp = self.__proxy.listerArticles()
+            lstModel = json.loads(resp)
+            
+            logger.debug('liste articles = %s', lstModel)
+            
+            return lstModel
     
         except Exception as e:
             logger.exception(e)
