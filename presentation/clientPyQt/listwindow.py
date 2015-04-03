@@ -8,7 +8,7 @@ Created on 19 mars 2015
 '''
 
 from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, \
-    QTableWidgetItem, QLineEdit, QAbstractItemView, QComboBox
+    QTableWidgetItem, QAbstractItemView, QComboBox
 from PyQt5.QtGui import QTextDocument
 from PyQt5.Qt import QTableWidget
 from PyQt5 import QtCore
@@ -18,8 +18,6 @@ from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 import string
 from random import sample
 import random
-from _datetime import datetime, date
-from _ast import Delete
 
 from clientPyQt import constantes
 from clientPyQt.detailwindow import DetailWindow
@@ -46,12 +44,12 @@ class ListWindow(QWidget):
             self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
             self.tableWidget.setMinimumHeight(10)
 
-            btnAdd = QPushButton('Ajouter')
-            btnMod = QPushButton('Modifier')
-            btnSup = QPushButton('Supprimer')
-            btnRef = QPushButton('Raffraichir')
-            btnGen = QPushButton('Generate')
-            btnImp = QPushButton('Imprimer')
+            btnAdd = QPushButton(_('Ajouter'))
+            btnMod = QPushButton(_('Modifier'))
+            btnSup = QPushButton(_('Supprimer'))
+            btnRef = QPushButton(_('Raffraichir'))
+            btnGen = QPushButton(_('Generate'))
+            btnImp = QPushButton(_('Imprimer'))
 
             self.cmboListModels = QComboBox()
             

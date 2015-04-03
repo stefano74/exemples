@@ -6,15 +6,13 @@ Created on 19 mars 2015
 @author: stefano
 '''
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import *
-
+from PyQt5.QtWidgets import QWidget, QPushButton, QLineEdit, QComboBox, QVBoxLayout, QHBoxLayout, \
+    QFormLayout, QGridLayout 
 from clientPyQt import constantes
-from clientPyQt.proxy import *
-
+from clientPyQt.proxy import ProxyREST, ProxyWeb, ProxyXMLRPC
 
 import logging
 from _ast import Delete
-from functools import partial
 from clientPyQt.listwindow import ListWindow
 
 logger = logging.getLogger(__name__)
@@ -32,9 +30,9 @@ class MainWindow(QWidget):
         try:
             self.__proxy = None
             self.__listwindow = None
-            btnCon = QPushButton('Connecter')
-            btnDec = QPushButton('Deconnecter')
-            btnQui = QPushButton('Quitter')
+            btnCon = QPushButton(_('Connecter'))
+            btnDec = QPushButton(_('Deconnecter'))
+            btnQui = QPushButton(_('Quitter'))
             self.edtUrl = QLineEdit(constantes.PROXY_URL)
             self.edtUsr = QLineEdit(constantes.PROXY_USER)
             self.edtPwd = QLineEdit(constantes.PROXY_PWD)
@@ -58,8 +56,8 @@ class MainWindow(QWidget):
             self.listLayout = QVBoxLayout()
             proxyLayout.addWidget(self.cmbProxy)
             proxyLayout.addWidget(self.edtUrl)
-            usrLayout.addRow("User", self.edtUsr)
-            usrLayout.addRow("Password", self.edtPwd)
+            usrLayout.addRow(_("Utilisateur"), self.edtUsr)
+            usrLayout.addRow(_("Mode de passe"), self.edtPwd)
             btnLayout.addWidget(btnQui, 0, 0)
             btnLayout.addWidget(btnCon,0, 5)
             btnLayout.addWidget(btnDec, 0, 6)

@@ -6,13 +6,12 @@ Created on 19 mars 2015
 
 @author: stefano
 '''
-from PyQt5.QtWidgets import QWidget, QGridLayout, QPushButton, \
-    QLabel, QLineEdit, QDateEdit, QFormLayout, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, \
+    QLineEdit, QFormLayout, QHBoxLayout, QVBoxLayout
 from PyQt5.QtCore import pyqtSignal
 from PyQt5 import QtCore    
 
 import logging
-from _datetime import date
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class DetailWindow(QWidget):
             self.__dictModel = adictModel
             
             self.btnOk = QPushButton('OK')
-            self.btnCancel = QPushButton('Annuler')  
+            self.btnCancel = QPushButton(_('Annuler'))  
             self.btnOk.setMaximumSize(100, 30)  
             self.btnCancel.setMaximumSize(100, 30)
 
