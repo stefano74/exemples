@@ -244,17 +244,19 @@ class ProxyREST(Proxy):
         resp.raise_for_status()
         resp.encoding = 'utf-8'
         dicolist = resp.json()
-        print('articles reçus = ', dicolist)
+        logger.debug('articles reçus = %s', dicolist)
         
+        # formatage du dico reçu au format Django Json serializer
         result = []
-        article = []
+        jsonDico = {} 
         for dico in dicolist:
-            article.append(dico['id'])
-            article.append(dico['libelle'])
-            article.append(dico['prix'])
-            article.append(dico['date'])
-            result.append(article)
-            article = []
+            jsonDico['pk'] = dico['id']
+            del dico['id']
+            jsonDico['fields'] = dico
+            result.append(jsonDico)
+            jsonDico = {}
+        
+        logger.debug('articles reçus après formattage Django Json serializer = %s', result)
         return result
 
     def modifierArticle(self, aid, alibelle, aprix, adate):
@@ -265,8 +267,8 @@ class ProxyREST(Proxy):
         resp = requests.put(url, data=json.dumps(article), headers=self.__headers)
         
         #revoir l'article modifié
-        print('resp.text = ', resp.text)
-        print('resp.status_code = ', resp.status_code)
+        logger.debug('article modifié = %s', resp.text)
+        logger.debug('resp.status_code = %s', resp.status_code)
         
         resp.raise_for_status()
         
@@ -275,8 +277,8 @@ class ProxyREST(Proxy):
         url = self._url + "articles/" + str(aid) + "/"
         resp = requests.delete(url, headers=self.__headers)
 
-        print("resp = ", resp.text)
-        print('resp.status_code = ', resp.status_code)
+        logger.debug("resp = %s", resp.text)
+        logger.debug('resp.status_code = %s', resp.status_code)
 
         resp.raise_for_status()
         
@@ -288,8 +290,8 @@ class ProxyREST(Proxy):
         resp = requests.post(url, data=json.dumps(article), headers=self.__headers)
 
         #revoir l'article ajouté
-        print('resp.text = ', resp.text)
-        print('resp.status_code = ', resp.status_code)
+        logger.debug('resp.text = %s', resp.text)
+        logger.debug('resp.status_code = %s', resp.status_code)
 
         resp.raise_for_status()
 
