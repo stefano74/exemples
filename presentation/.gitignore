@@ -1,3 +1,4 @@
 /.settings/
 filetext.txt
 /__pycache__/
+*.*~
