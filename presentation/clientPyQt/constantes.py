@@ -22,6 +22,7 @@ PROXY_USER      = 'guest'
 PROXY_PWD       = 'guest'
 """ Mot de passe """
 
+PROXY_URL   = 'http://localhost:8000'
 ADR_XMLRPC  = '/serveurXMLRPC/'
 """ URL du serveur XML-RPC """
 ADR_REST    = '/serveurREST/'

@@ -12,6 +12,7 @@ from django.core import serializers
 import json
 from serveurweb.core.mixins import JSONResponseMixin
 from serveurweb.core.forms import form_article
+from django.contrib.contenttypes.models import ContentType
 
    
 #####################################################################################################################
@@ -20,7 +21,8 @@ from serveurweb.core.forms import form_article
 
 def index(request):
     if request.META.get('HTTP_ACCEPT') == 'application/json':
-        return JSONResponseMixin.render_to_json_response({})
+        data = serializers.serialize('json', ContentType.objects.filter(app_label="core"))
+        return JsonResponse(data, safe=False) # retourne une list de dico ou un str et non un dict
     else:
         context = {'page_titre' : 'serveurweb'}
         return render(request, 'core/index.html', context)
@@ -49,7 +51,11 @@ class AjoutArticle(JSONResponseMixin, generic.CreateView):
         if self.request.META.get('HTTP_ACCEPT') == 'application/json':
             data = request.body.decode('utf-8')
             data = json.loads(data)
-            art = Articles(libelle = data['libelle'], prix = data['prix'], date=data['date'])
+            art = Articles(libelle = data['fields']['libelle'],
+                           prix = int(data['fields']['prix']),
+                           date=data['fields']['date'],
+#                            famille=int(data['fields']['famille']) famille doit = instante de Familles()
+                           )
             art.save()
             return self.render_to_json_response([get_object_or_404(Articles, pk=art.id), ]) # le serializer ne prend que QuerySet en param
         else:
@@ -65,12 +71,12 @@ class ModifArticle(JSONResponseMixin, generic.UpdateView):
         if self.request.META.get('HTTP_ACCEPT') == 'application/json':
             data = self.request.body.decode('utf-8')
             data = json.loads(data)
-            art = get_object_or_404(Articles, pk=kwargs['pk'])
-            art.libelle = data['libelle']
-            art.prix = data['prix']
-            art.date = data['date']
+            art = get_object_or_404(Articles, pk=data['pk'])
+            art.libelle = data['fields']['libelle']
+            art.prix = data['fields']['prix']
+            art.date = data['fields']['date']
             art.save()
-            return self.render_to_json_response([get_object_or_404(Articles, pk=kwargs['pk']), ]) # le serializer ne prend que QuerySet en param
+            return self.render_to_json_response([get_object_or_404(Articles, pk=art.id), ]) # le serializer ne prend que QuerySet en param
         else:
             return generic.UpdateView.put(self, *args, **kwargs)
 

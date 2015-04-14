@@ -5,16 +5,19 @@
 import sys
 from serveurweb.core.models import Articles
 from django.shortcuts import get_object_or_404
+from django.http.response import JsonResponse
+from django.core import serializers
 
 ##############################################################################
 #Retourne la listes des articles de la table articles
 ##############################################################################
 def listerArticles():
 	try:
-		resultat = []
-		for art in Articles.objects.order_by('id'):
-			resultat.append((art.id, art.libelle, art. prix, str(art.date)))
-		return resultat
+		data = serializers.serialize('json', Articles.objects.order_by('id'))
+		return data
+# 		for art in Articles.objects.order_by('id'):
+# 			resultat.append((art.id, art.libelle, art. prix, str(art.date)))
+# 		return resultat
 	except:
 		print('metier_django.serveurXMLRPC.views.listerArticles Erreur! : ', sys.exc_info()[0], sys.exc_info()[1])
 
